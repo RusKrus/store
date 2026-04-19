@@ -144,11 +144,7 @@ C:/Users/belon/IT/study/Store/Store.API/obj/Debug/net10.0/ref/Store.API.dll
 /home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/Store.API.dll
 /home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/Store.API.pdb
 /home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/AutoMapper.dll
-/home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 /home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/Humanizer.dll
-/home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/MediatR.dll
-/home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/MediatR.Contracts.dll
-/home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/MediatR.Extensions.Microsoft.DependencyInjection.dll
 /home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/Microsoft.AspNetCore.OpenApi.dll
 /home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/Microsoft.Build.Framework.dll
 /home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/Microsoft.CodeAnalysis.dll
@@ -272,3 +268,7 @@ C:/Users/belon/IT/study/Store/Store.API/obj/Debug/net10.0/ref/Store.API.dll
 /home/rustam/IT/Pets/store/Store.API/obj/Debug/net10.0/Store.API.pdb
 /home/rustam/IT/Pets/store/Store.API/obj/Debug/net10.0/Store.API.genruntimeconfig.cache
 /home/rustam/IT/Pets/store/Store.API/obj/Debug/net10.0/ref/Store.API.dll
+/home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/Microsoft.IdentityModel.Protocols.dll
+/home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+/home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/System.IdentityModel.Tokens.Jwt.dll
