@@ -43,48 +43,6 @@
           }
         }
       },
-      "MediatR/14.1.0": {
-        "type": "package",
-        "dependencies": {
-          "MediatR.Contracts": "[2.0.1, 3.0.0)",
-          "Microsoft.IdentityModel.JsonWebTokens": "8.14.0"
-        },
-        "compile": {
-          "lib/net10.0/MediatR.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net10.0/MediatR.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "MediatR.Contracts/2.0.1": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.0/MediatR.Contracts.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/MediatR.Contracts.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "MediatR.Extensions.Microsoft.DependencyInjection/11.1.0": {
-        "type": "package",
-        "dependencies": {
-          "MediatR": "[11.0.0, 12.0.0)"
-        },
-        "compile": {
-          "lib/netstandard2.1/MediatR.Extensions.Microsoft.DependencyInjection.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.1/MediatR.Extensions.Microsoft.DependencyInjection.dll": {}
-        }
-      },
       "Microsoft.AspNetCore.OpenApi/10.0.4": {
         "type": "package",
         "dependencies": {
@@ -896,57 +854,6 @@
         "lib/netstandard2.0/Humanizer.dll",
         "lib/netstandard2.0/Humanizer.xml",
         "logo.png"
-      ]
-    },
-    "MediatR/14.1.0": {
-      "sha512": "pdxza1pLqAk+06LV3THzNJrw5K5Ah6EC17TEkoC90gsAxwtXDJAQrGuDSDinHGgxWKWEn5ebqTNN3k1bLJOb0g==",
-      "type": "package",
-      "path": "mediatr/14.1.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE.md",
-        "README.md",
-        "gradient_128x128.png",
-        "lib/net10.0/MediatR.dll",
-        "lib/net10.0/MediatR.xml",
-        "lib/net462/MediatR.dll",
-        "lib/net462/MediatR.xml",
-        "lib/net8.0/MediatR.dll",
-        "lib/net8.0/MediatR.xml",
-        "lib/net9.0/MediatR.dll",
-        "lib/net9.0/MediatR.xml",
-        "lib/netstandard2.0/MediatR.dll",
-        "lib/netstandard2.0/MediatR.xml",
-        "mediatr.14.1.0.nupkg.sha512",
-        "mediatr.nuspec"
-      ]
-    },
-    "MediatR.Contracts/2.0.1": {
-      "sha512": "FYv95bNT4UwcNA+G/J1oX5OpRiSUxteXaUt2BJbRSdRNiIUNbggJF69wy6mnk2wYToaanpdXZdCwVylt96MpwQ==",
-      "type": "package",
-      "path": "mediatr.contracts/2.0.1",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "gradient_128x128.png",
-        "lib/netstandard2.0/MediatR.Contracts.dll",
-        "lib/netstandard2.0/MediatR.Contracts.xml",
-        "mediatr.contracts.2.0.1.nupkg.sha512",
-        "mediatr.contracts.nuspec"
-      ]
-    },
-    "MediatR.Extensions.Microsoft.DependencyInjection/11.1.0": {
-      "sha512": "RW3etRuy6Xp63cgqfC0r/ITOtUT0f9ymJl1+1XZdzsYUsfv7WBPC2kXGOP8IYpY/6c4Q6805vbIW/88DopUs3w==",
-      "type": "package",
-      "path": "mediatr.extensions.microsoft.dependencyinjection/11.1.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "gradient_128x128.png",
-        "lib/netstandard2.1/MediatR.Extensions.Microsoft.DependencyInjection.dll",
-        "mediatr.extensions.microsoft.dependencyinjection.11.1.0.nupkg.sha512",
-        "mediatr.extensions.microsoft.dependencyinjection.nuspec"
       ]
     },
     "Microsoft.AspNetCore.OpenApi/10.0.4": {
@@ -2572,8 +2479,6 @@
     "net10.0": [
       "AutoMapper >= 16.1.1",
       "AutoMapper.Extensions.Microsoft.DependencyInjection >= 12.0.1",
-      "MediatR >= 14.1.0",
-      "MediatR.Extensions.Microsoft.DependencyInjection >= 11.1.0",
       "Microsoft.AspNetCore.OpenApi >= 10.0.4",
       "Microsoft.EntityFrameworkCore.Design >= 10.0.5",
       "Store.Application >= 1.0.0",
@@ -2581,35 +2486,36 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\belon\\.nuget\\packages\\": {}
+    "/home/rustam/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\belon\\IT\\study\\Store\\Store.API\\Store.API.csproj",
+      "projectUniqueName": "/home/rustam/IT/Pets/store/Store.API/Store.API.csproj",
       "projectName": "Store.API",
-      "projectPath": "C:\\Users\\belon\\IT\\study\\Store\\Store.API\\Store.API.csproj",
-      "packagesPath": "C:\\Users\\belon\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\belon\\IT\\study\\Store\\Store.API\\obj\\",
+      "projectPath": "/home/rustam/IT/Pets/store/Store.API/Store.API.csproj",
+      "packagesPath": "/home/rustam/.nuget/packages/",
+      "outputPath": "/home/rustam/IT/Pets/store/Store.API/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\belon\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/home/rustam/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
       ],
       "sources": {
+        "/usr/lib64/dotnet/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "C:\\Users\\belon\\IT\\study\\Store\\Application\\Store.Application.csproj": {
-              "projectPath": "C:\\Users\\belon\\IT\\study\\Store\\Application\\Store.Application.csproj"
+            "/home/rustam/IT/Pets/store/Application/Store.Application.csproj": {
+              "projectPath": "/home/rustam/IT/Pets/store/Application/Store.Application.csproj"
             },
-            "C:\\Users\\belon\\IT\\study\\Store\\Store.Database.Postgres\\Store.Database.Postgres.csproj": {
-              "projectPath": "C:\\Users\\belon\\IT\\study\\Store\\Store.Database.Postgres\\Store.Database.Postgres.csproj"
+            "/home/rustam/IT/Pets/store/Store.Database.Postgres/Store.Database.Postgres.csproj": {
+              "projectPath": "/home/rustam/IT/Pets/store/Store.Database.Postgres/Store.Database.Postgres.csproj"
             }
           }
         }
@@ -2637,14 +2543,6 @@
           "AutoMapper.Extensions.Microsoft.DependencyInjection": {
             "target": "Package",
             "version": "[12.0.1, )"
-          },
-          "MediatR": {
-            "target": "Package",
-            "version": "[14.1.0, )"
-          },
-          "MediatR.Extensions.Microsoft.DependencyInjection": {
-            "target": "Package",
-            "version": "[11.1.0, )"
           },
           "Microsoft.AspNetCore.OpenApi": {
             "target": "Package",
@@ -2676,7 +2574,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.106/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/10.0.104/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.AspNetCore": "(,10.0.32767]",
           "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",
@@ -3101,16 +2999,6 @@
       "warningLevel": 1,
       "message": "Detected package version outside of dependency constraint: AutoMapper.Extensions.Microsoft.DependencyInjection 12.0.1 requires AutoMapper (= 12.0.1) but version AutoMapper 16.1.1 was resolved.",
       "libraryId": "AutoMapper",
-      "targetGraphs": [
-        "net10.0"
-      ]
-    },
-    {
-      "code": "NU1608",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Detected package version outside of dependency constraint: MediatR.Extensions.Microsoft.DependencyInjection 11.1.0 requires MediatR (>= 11.0.0 && < 12.0.0) but version MediatR 14.1.0 was resolved.",
-      "libraryId": "MediatR",
       "targetGraphs": [
         "net10.0"
       ]

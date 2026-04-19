@@ -1,0 +1,110 @@
+# Build results
+
+bin/
+obj/
+out/
+publish/
+
+# Rider / VS / VS Code
+
+.vs/
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# User-specific files
+
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider
+
+*.DotSettings.user
+
+# Logs
+
+*.log
+
+# OS files
+
+.DS_Store
+Thumbs.db
+
+# NuGet
+
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# Keep NuGet config
+
+!nuget.config
+
+# Environment variables
+
+.env
+.env.*
+!.env.example
+
+# ASP.NET Core
+
+appsettings.Development.json
+appsettings.*.local.json
+
+# Secrets
+
+secrets.json
+
+# Certificates
+
+*.pfx
+*.cer
+
+# Test results
+
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# Dotnet tools
+
+.dotnet/
+
+# EF Core
+
+Migrations/*.Designer.cs
+
+# Publish profiles
+
+Properties/PublishProfiles/*
+
+# Generated files
+
+*.generated.cs
+
+# Temporary files
+
+*.tmp
+*.temp
+
+# Node (если есть фронт внутри)
+
+node_modules/
+dist/
+.nuxt/
+.output/
+
+# Docker
+
+docker-compose.override.yml
+
+# Logs folder
+
+logs/

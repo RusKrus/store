@@ -732,35 +732,36 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\belon\\.nuget\\packages\\": {}
+    "/home/rustam/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\belon\\IT\\study\\Store\\Store.Database.Postgres\\Store.Database.Postgres.csproj",
+      "projectUniqueName": "/home/rustam/IT/Pets/store/Store.Database.Postgres/Store.Database.Postgres.csproj",
       "projectName": "Store.Database.Postgres",
-      "projectPath": "C:\\Users\\belon\\IT\\study\\Store\\Store.Database.Postgres\\Store.Database.Postgres.csproj",
-      "packagesPath": "C:\\Users\\belon\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\belon\\IT\\study\\Store\\Store.Database.Postgres\\obj\\",
+      "projectPath": "/home/rustam/IT/Pets/store/Store.Database.Postgres/Store.Database.Postgres.csproj",
+      "packagesPath": "/home/rustam/.nuget/packages/",
+      "outputPath": "/home/rustam/IT/Pets/store/Store.Database.Postgres/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\belon\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/home/rustam/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
       ],
       "sources": {
+        "/usr/lib64/dotnet/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "C:\\Users\\belon\\IT\\study\\Store\\Application\\Store.Application.csproj": {
-              "projectPath": "C:\\Users\\belon\\IT\\study\\Store\\Application\\Store.Application.csproj"
+            "/home/rustam/IT/Pets/store/Application/Store.Application.csproj": {
+              "projectPath": "/home/rustam/IT/Pets/store/Application/Store.Application.csproj"
             },
-            "C:\\Users\\belon\\IT\\study\\Store\\Domain\\Store.Domain.csproj": {
-              "projectPath": "C:\\Users\\belon\\IT\\study\\Store\\Domain\\Store.Domain.csproj"
+            "/home/rustam/IT/Pets/store/Domain/Store.Domain.csproj": {
+              "projectPath": "/home/rustam/IT/Pets/store/Domain/Store.Domain.csproj"
             }
           }
         }
@@ -806,7 +807,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.106/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/10.0.104/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.CSharp": "(,4.7.32767]",
           "Microsoft.VisualBasic": "(,10.4.32767]",
