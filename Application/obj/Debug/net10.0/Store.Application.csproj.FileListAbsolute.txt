@@ -1,0 +1,15 @@
+C:\Users\belon\IT\study\Store\Application\bin\Debug\net10.0\Store.Application.deps.json
+C:\Users\belon\IT\study\Store\Application\bin\Debug\net10.0\Store.Application.dll
+C:\Users\belon\IT\study\Store\Application\bin\Debug\net10.0\Store.Application.pdb
+C:\Users\belon\IT\study\Store\Application\bin\Debug\net10.0\Store.Domain.dll
+C:\Users\belon\IT\study\Store\Application\bin\Debug\net10.0\Store.Domain.pdb
+C:\Users\belon\IT\study\Store\Application\obj\Debug\net10.0\Store.Application.csproj.AssemblyReference.cache
+C:\Users\belon\IT\study\Store\Application\obj\Debug\net10.0\Store.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\belon\IT\study\Store\Application\obj\Debug\net10.0\Store.Application.AssemblyInfoInputs.cache
+C:\Users\belon\IT\study\Store\Application\obj\Debug\net10.0\Store.Application.AssemblyInfo.cs
+C:\Users\belon\IT\study\Store\Application\obj\Debug\net10.0\Store.Application.csproj.CoreCompileInputs.cache
+C:\Users\belon\IT\study\Store\Application\obj\Debug\net10.0\Store.Ap.C122FA30.Up2Date
+C:\Users\belon\IT\study\Store\Application\obj\Debug\net10.0\Store.Application.dll
+C:\Users\belon\IT\study\Store\Application\obj\Debug\net10.0\refint\Store.Application.dll
+C:\Users\belon\IT\study\Store\Application\obj\Debug\net10.0\Store.Application.pdb
+C:\Users\belon\IT\study\Store\Application\obj\Debug\net10.0\ref\Store.Application.dll

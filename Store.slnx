@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Store.Database.Postgres/Store.Database.Postgres.csproj" />
+  <Project Path="Application/Store.Application.csproj" />
+  <Project Path="Domain/Store.Domain.csproj" />
+  <Project Path="Store.API/Store.API.csproj" />
+</Solution>

@@ -1,0 +1,11 @@
+services:
+  postgres: 
+    image: postgres:16
+    container_name: store-db
+    restart: always
+    environment:
+        - POSTGRES_DB=store
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+    ports: 
+      - 5435:5432
