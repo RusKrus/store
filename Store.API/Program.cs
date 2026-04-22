@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Store.AutoMapperTypeConverters;
 using Store.Database.Postgres.Persistence;
+using Store.Application.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration
@@ -14,6 +15,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(_ => { }, typeof(AutoMapperProfileConfiguration));
 builder.Services.AddDbContext<StoreContext>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
