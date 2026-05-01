@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Store.Database.Postgres")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b510a80a9d1db556d25e88ce7b9a806493f58ad1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1726d5e0b9124cdd067500e257f6c8f3b6ee4545")]
 [assembly: System.Reflection.AssemblyProductAttribute("Store.Database.Postgres")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Store.Database.Postgres")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

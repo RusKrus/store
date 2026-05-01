@@ -20,7 +20,7 @@ public class StoreContext(DbContextOptions<StoreContext> options, IConfiguration
   {
     if (!optionsBuilder.IsConfigured)
     {
-          optionsBuilder
+      optionsBuilder
       .UseNpgsql(configuration.GetConnectionString("Postgres"))
       .UseLoggerFactory(CreateLoggerFactory())
       .EnableSensitiveDataLogging()

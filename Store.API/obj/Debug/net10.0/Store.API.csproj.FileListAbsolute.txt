@@ -272,3 +272,8 @@ C:/Users/belon/IT/study/Store/Store.API/obj/Debug/net10.0/ref/Store.API.dll
 /home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/Microsoft.IdentityModel.Protocols.dll
 /home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 /home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/System.IdentityModel.Tokens.Jwt.dll
+/home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/Swashbuckle.AspNetCore.Swagger.dll
+/home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+/home/rustam/IT/Pets/store/Store.API/bin/Debug/net10.0/Store.API.xml
+/home/rustam/IT/Pets/store/Store.API/obj/Debug/net10.0/Store.API.xml
