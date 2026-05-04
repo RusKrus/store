@@ -1,5 +1,7 @@
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Application.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -13,7 +15,13 @@ builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy =
+            JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 builder.Services.AddAutoMapper(_ => { }, typeof(AutoMapperProfileConfiguration));
 builder.Services.AddDbContext<StoreContext>();
 builder.Services.AddPostgresRepositories();
@@ -75,6 +83,8 @@ builder.Services.AddSwaggerGen(options =>
     });
 
     options.UseInlineDefinitionsForEnums();
+
+    options.DescribeAllParametersInCamelCase();
 });
 
 #region services

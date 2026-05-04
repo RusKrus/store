@@ -1,5 +1,8 @@
+using Application.Common.PaginationOptions;
+using Application.Common.PaginationResult;
 using Microsoft.EntityFrameworkCore;
 using Store.Application.Interfaces;
+using Store.Database.Postgres.Extensions;
 using Store.Domain.Models;
 using Store.Database.Postgres.Persistence;
 
@@ -30,8 +33,8 @@ public class ProductRepository(StoreContext context) : IProductRepository
         await context.Products.Where(p => p.Id == productId).ExecuteDeleteAsync(cancellationToken);
     }
 
-    public async Task<List<Product>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<PaginationResult<Product>> GetPaginatedListAsync(PaginationOptions options, CancellationToken cancellationToken = default)
     {
-        return await context.Products.ToListAsync(cancellationToken);
+        return await context.Products.PaginateAsync(options, cancellationToken);
     }
 }

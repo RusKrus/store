@@ -1,5 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Application.Services;
+using Store.API.Contracts.Requests.Common;
+using Store.API.Contracts.Response;
+using Store.API.Extensions;
+using Store.Domain.Models;
 
 namespace Store.Api.Controllers;
 
@@ -9,14 +13,15 @@ public class ProductController(ProductService productService) : ControllerBase
 {
 
     /// <summary>
-    ///     Returns all available products in store
+    ///     Returns all available products in store, paginated
     /// </summary>
     /// <param></param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<ActionResult> GetAllProducts(CancellationToken ct)
+    public async Task<PaginationResponse<Product>> GetProducts(PaginationRequest request, string? SearchString, CancellationToken ct)
     {
-        var result = await productService.GetAllProducts(ct);
-        return Ok(result);
+        var paginationOptions = request.ToOptions();
+        var result = await productService.GetAllProducts(paginationOptions, ct);
+        return new PaginationResponse<Product>(result.Total, result.Items);
     }
 }

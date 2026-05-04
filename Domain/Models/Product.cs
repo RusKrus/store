@@ -1,5 +1,3 @@
-using System;
-
 namespace Store.Domain.Models;
 
 public class Product
