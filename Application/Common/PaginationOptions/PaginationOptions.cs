@@ -16,7 +16,7 @@ public sealed class PaginationOptions
         if (showAll) return new PaginationOptions(0, int.MaxValue);
 
         var normalizedSize = Math.Clamp(perPage, 1, 100);
-        var normalizedPage = Math.Max(page, 1);
+        var normalizedPage = (Math.Max(page, 1) - 1) * normalizedSize;
         return new PaginationOptions(normalizedPage, normalizedSize);
     }
 }

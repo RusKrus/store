@@ -2,12 +2,14 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Application.Services;
+using Application.Handlers;
+using Application.Handlers.Auth;
+using Application.Handlers.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Store.AutoMapperTypeConverters;
-using Store.Database.Postgres.Persistence;
+using Store.Infrastructure.Persistence;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,31 +27,9 @@ builder.Services.AddControllers()
 builder.Services.AddAutoMapper(_ => { }, typeof(AutoMapperProfileConfiguration));
 builder.Services.AddDbContext<StoreContext>();
 builder.Services.AddPostgresRepositories();
-builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            // указывает, будет ли валидироваться издатель при валидации токена
-            ValidateIssuer = true,
-            // будет ли валидироваться потребитель токена
-            ValidateAudience = true,
-            // будет ли валидироваться время существования
-            ValidateLifetime = true,
-            // валидация ключа безопасности
-            ValidateIssuerSigningKey = true,
-            // строка, представляющая издателя - любая стркоа
-            ValidIssuer = builder.Configuration["JwtIssuer"],
-            // установка потребителя токена - любая строка, обычно сайт где используется токен
-            ValidAudience = builder.Configuration["JwtAudience"],
-            // установка ключа безопасности на основе рандомной строки
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtKey"]!))
-        };
-    });
+builder.Services.AddHasherService();
+builder.Services.AddJwtService();
+builder.Services.AddPostgres(builder.Configuration);
 builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -87,8 +67,40 @@ builder.Services.AddSwaggerGen(options =>
     options.DescribeAllParametersInCamelCase();
 });
 
-#region services
-builder.Services.AddScoped<ProductService>();
+#region handlers
+builder.Services.AddScoped<CreateProductHandler>();
+builder.Services.AddScoped<DeleteProductHandler>();
+builder.Services.AddScoped<GetPaginatedProductsHandler>();
+builder.Services.AddScoped<GetProductByIdHandler>();
+builder.Services.AddScoped<UpdateProductHandler>();
+builder.Services.AddScoped<RegisterCommandHandler>();
+builder.Services.AddScoped<LoginCommandHandler>();
+builder.Services.AddScoped<GetUserByEmailHandler>();
+builder.Services.AddScoped<GetUserByIdHandler>();
+builder.Services.AddScoped<GetAllUsersQueryHandler>();
+builder.Services.AddScoped<CreateUserCommandHandler>();
+#endregion
+
+#region auth
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration.GetSection("JwtIssuer").Value,
+        ValidAudience = builder.Configuration.GetSection("JwtAudience").Value,
+        IssuerSigningKey =
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JwtKey").Value))
+    };
+});
+builder.Services.AddAuthorization();
 #endregion
 
 var app = builder.Build();
@@ -98,6 +110,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseAuthentication();
+app.UseAuthorization();
 await app.Services.MigrateDbAsync();
 
 app.Run();
