@@ -19,12 +19,16 @@ public class AutoMapperProfileConfiguration : Profile
     CreateMap<CreateProductRequest, CreateProductCommand>();
     CreateMap<Product, ProductResponse>();
     CreateMap<UpdateProductCommand, UpdateProductRequest>();
+
     CreateMap(typeof(PaginationResult<>), typeof (PaginationResponse<>));
+
     CreateMap<RegisterRequest, RegisterCommand>();
     CreateMap<LoginRequest, LoginCommand>();
+
     CreateMap<User, UserResponse>()
       .ForCtorParam(nameof(UserResponse.FullName), opt =>
         opt.MapFrom(src => $"{src.FirstName} {src.LastName}"));
     CreateMap<CreateUserRequest, CreateUserCommand>();
+    CreateMap<UpdateUserRequest, UpdateUserCommand>();
   }
 }

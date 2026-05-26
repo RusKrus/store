@@ -24,6 +24,10 @@ public class JwtProvider(IConfiguration configuration) : IJwtProvider
                 ClaimTypes.Role,
                 user.Role.ToString()),
             new Claim(
+                ClaimTypes.Name,
+                $"{user.LastName} {user.FirstName}"
+                ),
+            new Claim(
                 JwtRegisteredClaimNames.Jti,
                 Guid.NewGuid().ToString())
         };

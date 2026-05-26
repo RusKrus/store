@@ -11,12 +11,13 @@ using Store.API.Contracts.Response;
 using Store.API.Contracts.Response.Users;
 using Store.API.Extensions;
 using Store.Domain.Enums;
+using Store.Domain.Models;
 
 namespace Store.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController(IMapper mapper)
+public class UserController(IMapper mapper) : ControllerBase
 {
     /// <summary>
     ///     Returns all existing users paginated
@@ -65,15 +66,63 @@ public class UserController(IMapper mapper)
     }
 
     /// <summary>
-    ///     Creates user
+    ///     Creates user. Only user with lower role can be created
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPost]
-    [Authorize(Roles = nameof(UserRole.Admin))]
+    [Authorize]
     public async Task<ActionResult<int>> CreateUser([FromBody] CreateUserRequest request, CreateUserCommandHandler handler, CancellationToken ct)
     {
         var command = mapper.Map<CreateUserCommand>(request);
         return await handler.Handle(command, ct);
+    }
+
+    /// <summary>
+    ///     Allows to delete any kind of user
+    /// </summary>
+    /// <description>
+    ///     Simple users can be deleted by Admins and above. Admins can be deleted only by superadmins.
+    ///     Superadmins can't be deleted from this endpoint
+    /// </description>
+    /// <param name="id"></param>
+    /// <param name="handler"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    [HttpDelete("{id:int}")]
+    [Authorize]
+    public async Task<ActionResult> DeleteUser(int id, DeleteUserHandler handler, CancellationToken ct)
+    {
+        await handler.Handle(id, ct);
+        return NoContent();
+    }
+
+    /// <summary>
+    ///     Updates user profile, if user role is lower
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="request"></param>
+    /// <param name="handler"></param>
+    /// <param name="ct"></param>
+    [HttpPut("{id:int}")]
+    [Authorize]
+    public async Task<ActionResult<User>> UpdateUser(
+        [FromRoute] int id,
+        [FromBody] UpdateUserRequest request,
+        UpdateUserHandler handler,
+        CancellationToken ct
+    )
+    {
+        var command = new UpdateUserCommand(
+            id,
+            request.FirstName,
+            request.LastName,
+            request.Email,
+            request.Password,
+            request.Role
+        );
+        
+        var user = await handler.Handle(command, ct);
+        return Ok(user);
     }
 }

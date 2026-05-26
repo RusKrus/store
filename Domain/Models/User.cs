@@ -22,6 +22,10 @@ public class User
   public Cart? Cart { get; private set; } = null;
   public List<Order>? Orders { get; private set; } = null;
 
+  public void Update(string firstName, string lastName, string email, string passwordHash, UserRole? role)
+  {
+    SetValue(firstName, lastName, email, passwordHash, role);
+  }
   private void SetValue(string firstName, string lastName, string email, string passwordHash, UserRole? role)
   {
     if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(passwordHash))

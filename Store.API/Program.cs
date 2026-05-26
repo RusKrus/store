@@ -8,7 +8,10 @@ using Application.Handlers.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Store.Api.Middlewares;
+using Store.Application.Interfaces;
 using Store.AutoMapperTypeConverters;
+using Store.Infrastructure.Auth;
 using Store.Infrastructure.Persistence;
 
 
@@ -79,6 +82,8 @@ builder.Services.AddScoped<GetUserByEmailHandler>();
 builder.Services.AddScoped<GetUserByIdHandler>();
 builder.Services.AddScoped<GetAllUsersQueryHandler>();
 builder.Services.AddScoped<CreateUserCommandHandler>();
+builder.Services.AddScoped<DeleteUserHandler>();
+builder.Services.AddScoped<UpdateUserHandler>();
 #endregion
 
 #region auth
@@ -101,6 +106,8 @@ builder.Services.AddAuthentication(options =>
     };
 });
 builder.Services.AddAuthorization();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
 #endregion
 
 var app = builder.Build();
@@ -112,6 +119,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<ExceptionMiddleware>();
 await app.Services.MigrateDbAsync();
 
 app.Run();

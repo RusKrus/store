@@ -63,7 +63,7 @@ public class ProductController(IMapper mapper) : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    [Authorize(Roles = nameof(UserRole.Admin))]
+    [Authorize]
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> DeleteProductById(int id, DeleteProductHandler deleteProductHandler, CancellationToken ct)
     {
@@ -77,7 +77,7 @@ public class ProductController(IMapper mapper) : ControllerBase
     /// <param name="productToCreate"></param>
     /// <returns></returns>
     [HttpPost]
-    [Authorize(Roles = nameof(UserRole.Admin))]
+    [Authorize]
     public async Task<ActionResult<int>> CreateProductAsync(
         [FromBody] CreateProductRequest productToCreate,
         CreateProductHandler productRequestHandler,
@@ -95,7 +95,7 @@ public class ProductController(IMapper mapper) : ControllerBase
     /// <param name="newProductData"></param>
     /// <returns></returns>
     [HttpPut("{id:int}")]
-    [Authorize(Roles = nameof(UserRole.Admin))]
+    [Authorize]
     public async Task<ActionResult<ProductResponse>> UpdateProduct(
         [FromBody] UpdateProductRequest newProductData,
         [FromRoute] int id,
