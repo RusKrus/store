@@ -1,5 +1,5 @@
 namespace Application.Common.Errors;
 
-public class NotFoundException(string message) : AppException(message, 404)
+public class NotFoundException(string message = "Not found.") : AppException(message, 404)
 {
 }

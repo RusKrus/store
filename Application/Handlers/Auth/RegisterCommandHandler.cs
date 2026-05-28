@@ -17,8 +17,8 @@ public class RegisterCommandHandler(IUserRepository repository, IUnitOfWork unit
 
         var passwordHashed = passwordHasher.Hash(command.Password);
         var user = new User(command.FirstName, command.LastName, command.Email, passwordHashed, null);
-        repository.CreateAsync(user, ct);
-        unitOfWork.SaveChangesAsync(ct);
+        await repository.CreateAsync(user, ct);
+        await unitOfWork.SaveChangesAsync(ct);
         return user.Id;
     }
 }

@@ -84,6 +84,8 @@ builder.Services.AddScoped<GetAllUsersQueryHandler>();
 builder.Services.AddScoped<CreateUserCommandHandler>();
 builder.Services.AddScoped<DeleteUserHandler>();
 builder.Services.AddScoped<UpdateUserHandler>();
+builder.Services.AddScoped<UpdateProfileHandler>();
+builder.Services.AddScoped<UpdatePasswordHandler>();
 #endregion
 
 #region auth

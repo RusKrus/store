@@ -86,8 +86,6 @@ public class UserController(IMapper mapper) : ControllerBase
     ///     Superadmins can't be deleted from this endpoint
     /// </description>
     /// <param name="id"></param>
-    /// <param name="handler"></param>
-    /// <param name="ct"></param>
     /// <returns></returns>
     [HttpDelete("{id:int}")]
     [Authorize]
@@ -98,15 +96,13 @@ public class UserController(IMapper mapper) : ControllerBase
     }
 
     /// <summary>
-    ///     Updates user profile, if user role is lower
+    ///     Updates user data, if user role is lower
     /// </summary>
     /// <param name="id"></param>
     /// <param name="request"></param>
-    /// <param name="handler"></param>
-    /// <param name="ct"></param>
     [HttpPut("{id:int}")]
     [Authorize]
-    public async Task<ActionResult<User>> UpdateUser(
+    public async Task<ActionResult<UserResponse>> UpdateUser(
         [FromRoute] int id,
         [FromBody] UpdateUserRequest request,
         UpdateUserHandler handler,
@@ -123,6 +119,45 @@ public class UserController(IMapper mapper) : ControllerBase
         );
         
         var user = await handler.Handle(command, ct);
-        return Ok(user);
+        var userResponse = mapper.Map<UserResponse>(user);
+        return Ok(userResponse);
+    }
+
+    /// <summary>
+    ///     Updates self profile
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    [HttpPut("profile")]
+    [Authorize]
+    public async Task<ActionResult<UserResponse>> UpdateProfile(
+        [FromBody] UpdateProfileRequest request,
+        UpdateProfileHandler handler,
+        CancellationToken ct)
+    {
+        var command = mapper.Map<UpdateProfileCommand>(request);
+        var user = await handler.Handle(command, ct);
+        var userResponse = mapper.Map<UserResponse>(user);
+        return Ok(userResponse);
+    }
+
+    /// <summary>
+    ///     Updates current user password
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="handler"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    [HttpPut("profile/password")]
+    [Authorize]
+    public async Task<ActionResult> UpdatePassword(
+        [FromBody] UpdatePasswordRequest request,
+        UpdatePasswordHandler handler,
+        CancellationToken ct
+    )
+    {
+        var command = mapper.Map<UpdatePasswordCommand>(request);
+        await handler.Handle(command, ct);
+        return Ok();
     }
 }

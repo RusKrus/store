@@ -30,5 +30,7 @@ public class AutoMapperProfileConfiguration : Profile
         opt.MapFrom(src => $"{src.FirstName} {src.LastName}"));
     CreateMap<CreateUserRequest, CreateUserCommand>();
     CreateMap<UpdateUserRequest, UpdateUserCommand>();
+    CreateMap<UpdateProductRequest, UpdateProductCommand>();
+    CreateMap<UpdatePasswordRequest, UpdatePasswordCommand>();
   }
 }

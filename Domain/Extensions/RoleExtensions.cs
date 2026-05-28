@@ -8,4 +8,9 @@ public static class RoleExtensions
     {
         return currentUserRole > targetUserRole;
     }
+
+    public static bool IsAdminOrAbove(this UserRole currentUserRole)
+    {
+        return currentUserRole > UserRole.Customer;
+    }
 }

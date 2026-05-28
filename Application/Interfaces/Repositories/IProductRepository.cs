@@ -5,10 +5,11 @@ using Store.Domain.Models;
 
 namespace Store.Application.Interfaces;
 
-public interface IProductRepository
+public interface IProductRepository : IBaseRepository<Product>
 {
-    Task<Product?> GetByIdAsync(int productId, CancellationToken cancellationToken = default);
-    Task AddAsync(Product product, CancellationToken cancellationToken = default);
-    Task DeleteByIdAsync(int productId, CancellationToken cancellationToken = default);
-    Task<PaginationResult<Product>> GetPaginatedListAsync(PaginationOptions options, string? searchString, CancellationToken cancellationToken = default);
+    Task<PaginationResult<Product>> GetPaginatedListAsync(
+        PaginationOptions options,
+        string? searchString,
+        CancellationToken cancellationToken = default
+        );
 }

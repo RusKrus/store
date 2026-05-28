@@ -1,6 +1,8 @@
+using Domain.Common;
+
 namespace Store.Domain.Models;
 
-public class Product
+public class Product : BaseEntity
 {
   private Product() {}
   public Product(string name, string description, decimal price, int quantity)
@@ -12,7 +14,6 @@ public class Product
   {
     SetValues(name, description, price, quantity);
   }
-  public int Id { get; init; }
   public string Name { get; private set; } = null!;
   public string Description { get; private set; } = null!;
   public decimal Price { get; private set; }

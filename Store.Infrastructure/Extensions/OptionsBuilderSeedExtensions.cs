@@ -85,7 +85,7 @@ public static class OptionsBuilderSeedExtensions
           );
       }
 
-      if (await context.Set<User>().AnyAsync(u => u.Role == UserRole.SuperAdmin, ct))
+      if (!await context.Set<User>().AnyAsync(u => u.Role == UserRole.SuperAdmin, ct))
       {
         await context.Set<User>().AddAsync(
           new User(
@@ -94,11 +94,11 @@ public static class OptionsBuilderSeedExtensions
             "belonoir@gmail.com",
             "password",
             UserRole.SuperAdmin
-          )
-        );
+          ) ,ct);
       }
-    });
 
+      await context.SaveChangesAsync(ct);
+    });
     return optionsBuilder;
   }
 }
