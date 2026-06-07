@@ -31,17 +31,7 @@ public class AddProductToCartCommandHandler(
         if (command.Quantity > product.Quantity) throw new ValidationException($"Too much quantity requested. Only {product.Quantity} items available.");
 
         var cartItem = userCart!.CartItems.FirstOrDefault(ci => ci.ProductId == command.ProductId);
-
-        if (cartItem is null)
-        {
-            var newCartItem = new CartItem(command.ProductId, command.Quantity);
-            userCart.CartItems.Add(newCartItem);
-            userCart.AddProduct(command.ProductId, command.Quantity);
-        }
-        else
-        {
-            cartItem.UpdateQuantity(command.Quantity);
-        }
+        userCart.AddProduct(command.ProductId, command.Quantity);
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

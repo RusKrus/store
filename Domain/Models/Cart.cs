@@ -17,8 +17,17 @@ public class Cart : BaseEntity
 
   public void AddProduct(int productId, int quantity)
   {
-    var newCartItem = new CartItem(productId, quantity);
-    CartItems.Add(newCartItem);
+    var existingCartItem = CartItems.FirstOrDefault(ci => ci.ProductId == productId);
+    if (existingCartItem is null)
+    {
+      var newCartItem = new CartItem(productId, quantity);
+      CartItems.Add(newCartItem);
+    }
+    else
+    {
+      existingCartItem.UpdateQuantity(quantity);
+    }
+
   }
 
   public bool RemoveCartItem(int productId)

@@ -10,7 +10,10 @@ namespace Store.Infrastructure.Repositories;
 
 public class ProductRepository(StoreContext context) : BaseRepository<Product>(context), IProductRepository
 {
-    public async Task<PaginationResult<Product>> GetPaginatedListAsync(PaginationOptions options, string? searchString, CancellationToken cancellationToken = default)
+    public async Task<PaginationResult<Product>> GetPaginatedListAsync(
+        PaginationOptions options,
+        string? searchString,
+        CancellationToken cancellationToken = default)
     {
         IQueryable<Product> query = DbSet;
         if (searchString != null)

@@ -33,10 +33,22 @@ public class Order : BaseEntity
     public DateTime UpdatedAt { get; private set; }
     public DateTime ShippingAt { get; private set; }
     public OrderReceiverInfo OrderReceiverInfo { get; private set; }
+
     public void ChangeStatus(OrderStatuses status)
     {
         Status = status;
         UpdatedAt = DateTime.UtcNow;
+    }
+
+    public bool CancelOrder()
+    {
+        if (Status <= OrderStatuses.Confirmed)
+        {
+            Status = OrderStatuses.Canceled;
+            UpdatedAt = DateTime.UtcNow;
+            return true;
+        }
+        return false;
     }
 
     public void AddOrderItem(int productId, int orderId, decimal price, int quantity)
@@ -47,11 +59,10 @@ public class Order : BaseEntity
 }
 
 public record OrderReceiverInfo(
-    string ReceiverName,
+    string ReceiverFirstName,
     string ReceiverLastname,
     string ReceiverAddress,
     string ReceiverEmail,
     string ReceiverPhoneNumber,
     string City,
-    string Address,
     string? OrderComment);

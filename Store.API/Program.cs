@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 using Application.Handlers;
 using Application.Handlers.Auth;
 using Application.Handlers.Users;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -109,6 +110,12 @@ builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
 
 var app = builder.Build();
 
+// if (app.Environment.IsDevelopment())
+// {
+//     using var scope = app.Services.CreateScope();
+//     var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+//     mapper.ConfigurationProvider.AssertConfigurationIsValid();
+// }
 app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();

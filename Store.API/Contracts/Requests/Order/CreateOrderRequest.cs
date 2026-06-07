@@ -15,7 +15,7 @@ public record CreateOrderRequest
     [Length(1, 50)]
     public string City { get; init; }
     [Length(1, 50)]
-    public string Address { get; init; }
+    public string ReceiverAddress { get; init; }
     [Length(0, 300)]
     public string? OrderComment { get; init; }
 }

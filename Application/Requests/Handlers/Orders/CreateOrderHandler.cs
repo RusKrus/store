@@ -24,13 +24,12 @@ public class CreateOrderHandler(
         if (currentUserCart.CartItems.Count == 0) throw new ValidationException("Cart is empty");
 
         var receiverInfo = new OrderReceiverInfo(
-            command.ReceiverName,
+            command.ReceiverFirstName,
             command.ReceiverLastName,
-            command.Address,
+            command.ReceiverAddress,
             command.ReceiverEmail,
             command.ReceiverPhoneNumber,
             command.City,
-            command.Address,
             command.OrderComment
             );
         var order = new Order(
@@ -46,7 +45,7 @@ public class CreateOrderHandler(
         }
 
         await orderRepository.CreateAsync(order, ct);
-
+        currentUserCart.ClearCart();
         await unitOfWork.SaveChangesAsync(ct);
 
         return order.Id;

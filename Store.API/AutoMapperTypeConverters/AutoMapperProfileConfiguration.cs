@@ -12,6 +12,8 @@ using Store.API.Contracts.Requests.Product;
 using Store.API.Contracts.Requests.User;
 using Store.API.Contracts.Response;
 using Store.API.Contracts.Response.Cart;
+using Store.API.Contracts.Response.OrderItem;
+using Store.API.Contracts.Response.Orders;
 using Store.API.Contracts.Response.Users;
 using Store.Domain.Models;
 
@@ -45,6 +47,10 @@ public class AutoMapperProfileConfiguration : Profile
         opt.MapFrom(src => src.Product.Name));
     CreateMap<Cart, CartResponse>();
 
+    CreateMap<OrderItem, OrderItemResponse>();
+    CreateMap<OrderReceiverInfo, ReceiverInfoResponse>()
+      .ForCtorParam(nameof(ReceiverInfoResponse.ReceiverFullName), opt => opt.MapFrom(src => $"{src.ReceiverFirstName} {src.ReceiverLastname}"));
+    CreateMap<Order, OrderResponse>();
     CreateMap<CreateOrderRequest, CreateOrderCommand>();
   }
 }

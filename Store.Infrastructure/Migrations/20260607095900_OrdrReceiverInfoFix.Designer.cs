@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Store.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using Store.Infrastructure.Persistence;
 namespace Store.Infrastructure.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    partial class StoreContextModelSnapshot : ModelSnapshot
+    [Migration("20260607095900_OrdrReceiverInfoFix")]
+    partial class OrdrReceiverInfoFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -258,11 +261,11 @@ namespace Store.Infrastructure.Migrations
                                 .IsRequired()
                                 .HasColumnType("text");
 
-                            b1.Property<string>("ReceiverFirstName")
+                            b1.Property<string>("ReceiverLastname")
                                 .IsRequired()
                                 .HasColumnType("text");
 
-                            b1.Property<string>("ReceiverLastname")
+                            b1.Property<string>("ReceiverName")
                                 .IsRequired()
                                 .HasColumnType("text");
 
