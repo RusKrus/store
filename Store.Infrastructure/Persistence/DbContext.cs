@@ -17,11 +17,9 @@ public class StoreContext(DbContextOptions<StoreContext> options) : DbContext(op
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
     modelBuilder.ApplyConfiguration(new UserConfiguration());
+    modelBuilder.ApplyConfiguration(new CartConfiguration());
+    modelBuilder.ApplyConfiguration(new CartItemConfiguration());
+    modelBuilder.ApplyConfiguration(new OrderConfiguration());
     base.OnModelCreating(modelBuilder);
-  }
-
-  public ILoggerFactory CreateLoggerFactory()
-  {
-    return LoggerFactory.Create(builder => { builder.AddConsole(); });
   }
 }

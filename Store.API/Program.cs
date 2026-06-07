@@ -71,21 +71,16 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 #region handlers
-builder.Services.AddScoped<CreateProductHandler>();
-builder.Services.AddScoped<DeleteProductHandler>();
-builder.Services.AddScoped<GetPaginatedProductsHandler>();
-builder.Services.AddScoped<GetProductByIdHandler>();
-builder.Services.AddScoped<UpdateProductHandler>();
-builder.Services.AddScoped<RegisterCommandHandler>();
-builder.Services.AddScoped<LoginCommandHandler>();
-builder.Services.AddScoped<GetUserByEmailHandler>();
-builder.Services.AddScoped<GetUserByIdHandler>();
-builder.Services.AddScoped<GetAllUsersQueryHandler>();
-builder.Services.AddScoped<CreateUserCommandHandler>();
-builder.Services.AddScoped<DeleteUserHandler>();
-builder.Services.AddScoped<UpdateUserHandler>();
-builder.Services.AddScoped<UpdateProfileHandler>();
-builder.Services.AddScoped<UpdatePasswordHandler>();
+var handlers = typeof(CreateProductHandler)
+    .Assembly
+    .GetTypes()
+    .Where(t =>
+        t.Namespace is not null &&
+        t.Namespace.Contains("Handlers"));
+
+foreach (var handler in handlers) {
+    builder.Services.AddScoped(handler);
+}
 #endregion
 
 #region auth

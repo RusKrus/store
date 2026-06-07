@@ -53,7 +53,7 @@ public class UserController(IMapper mapper) : ControllerBase
     }
 
     /// <summary>
-    ///     Returns user, found by email
+    ///     Returns user, found by unique id
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
@@ -76,6 +76,18 @@ public class UserController(IMapper mapper) : ControllerBase
     {
         var command = mapper.Map<CreateUserCommand>(request);
         return await handler.Handle(command, ct);
+    }
+
+    /// <summary>
+    ///     Returns self user data
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("profile")]
+    [Authorize]
+    public async Task<ActionResult<UserResponse>> GetSelfProfile(GetSelfProfileQueryHandler handler, CancellationToken ct)
+    {
+        var result = await handler.Handle(ct);
+        return mapper.Map<UserResponse>(result);
     }
 
     /// <summary>

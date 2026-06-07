@@ -24,7 +24,7 @@ public class UpdatePasswordHandler(
             throw new UnauthorizedException("User not found");
         }
 
-        var isOldPasswordValid = passwordHasher.Verify(userToUpdate.PasswordHash, request.OldPassword);
+        var isOldPasswordValid = passwordHasher.Verify(request.OldPassword, userToUpdate.PasswordHash);
         if (!isOldPasswordValid)
         {
             throw new ValidationException("Password doesn't match");

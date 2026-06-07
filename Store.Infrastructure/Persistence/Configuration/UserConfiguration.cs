@@ -12,5 +12,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     builder.HasKey(u => u.Id);
     builder.HasOne(u => u.Cart).WithOne(c => c.User);
     builder.HasIndex(x => x.Email).IsUnique();
+    builder.Property(x => x.Role).HasConversion<string>();
   }
 }
