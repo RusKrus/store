@@ -51,6 +51,20 @@ public class User : BaseEntity
     UpdatedAt = DateTime.UtcNow;
   }
 
+  public CartsMergeStatuses AssignCart(Cart cart)
+  {
+    if (Cart is null)
+    {
+      Cart = cart;
+      return CartsMergeStatuses.CartAssigned;
+    }
+    else
+    {
+      Cart.MergeCarts(cart);
+      return CartsMergeStatuses.CartsMerged;
+    }
+  }
+
   private void SetValue(string firstName, string lastName, string email, string passwordHash, UserRole? role)
   {
     if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(passwordHash))

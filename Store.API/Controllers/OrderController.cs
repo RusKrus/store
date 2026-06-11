@@ -24,7 +24,10 @@ public class OrderController(IMapper mapper) : ControllerBase
     /// <returns></returns>
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<int>> CreateOrder(CreateOrderRequest request, CreateOrderHandler handler, CancellationToken cancellationToken)
+    public async Task<ActionResult<int>> CreateOrder(
+        CreateOrderRequest request,
+        CreateOrderHandler handler,
+        CancellationToken cancellationToken)
     {
         var command = mapper.Map<CreateOrderCommand>(request);
         return await handler.Handle(command, cancellationToken);

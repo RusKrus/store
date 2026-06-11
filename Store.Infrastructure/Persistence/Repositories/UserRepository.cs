@@ -12,7 +12,10 @@ public class UserRepository(StoreContext context) : BaseRepository<User>(context
 {
     public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
-        return await context.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
+        return await context.Users
+            .Include(u => u.Cart)
+            .ThenInclude(c => c.CartItems)
+            .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
     }
     public async Task<PaginationResult<User>> GetPaginatedListAsync(PaginationOptions options, string? searchString, CancellationToken cancellationToken = default)
     {

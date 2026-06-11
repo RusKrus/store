@@ -9,18 +9,26 @@ namespace Store.Infrastructure.Auth;
 
 public class CurrentUserProvider(IHttpContextAccessor httpContextAccessor) : ICurrentUserProvider
 {
-    public CurrentUserModel GetCurrentUser()
+    public CurrentUserModel? GetCurrentUser()
     {
         var user = httpContextAccessor.HttpContext?.User;
-        if (user is null)
+        if (user is null) return null;
+
+        var isIdValid = int.TryParse(user.FindFirstValue(ClaimTypes.NameIdentifier), out var userIdClaim);
+        var email = user.FindFirstValue(ClaimTypes.Email);
+        var name = user.FindFirstValue(ClaimTypes.Name);
+        var isRoleValid = Enum.TryParse<UserRole>(user.FindFirstValue(ClaimTypes.Role), out var roleClaim);
+
+        if (!isIdValid || email is null || name is null || !isRoleValid)
         {
-            throw new UnauthorizedException("User not authorized");
+            return null;
         }
+
         return new CurrentUserModel(
-            int.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)),
-            user.FindFirstValue(ClaimTypes.Email),
-            user.FindFirstValue(ClaimTypes.Name),
-            Enum.Parse<UserRole>(user.FindFirstValue(ClaimTypes.Role))
+            userIdClaim,
+            email,
+            name,
+            roleClaim
             );
     }
 }

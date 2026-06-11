@@ -17,7 +17,7 @@ public class CreateOrderHandler(
         var currentUser = currentUserProvider.GetCurrentUser();
         if (currentUser is null) throw new UnauthorizedException();
 
-        var getCartOptions = new GetCartQueryOptions(currentUser.Id, true, true);
+        var getCartOptions = new GetCartByUserQueryOptions(currentUser.Id, true, true);
         var currentUserCart = await cartRepository.GetByUserIdAsync(getCartOptions, ct);
         if (currentUserCart is null) throw new NotFoundException("User's cart is not found");
 

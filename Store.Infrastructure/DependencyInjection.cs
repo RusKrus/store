@@ -3,9 +3,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Store.Application.Interfaces;
+using Store.Application.Interfaces.CartCookiesService;
 using Store.Infrastructure.Auth;
 using Store.Infrastructure.Repositories;
 using Store.Infrastructure.Extensions;
+using Store.Infrastructure.Services;
 
 namespace Store.Infrastructure.Persistence;
 
@@ -46,6 +48,12 @@ public static class DependencyInjection
     public static IServiceCollection AddJwtService(this IServiceCollection services)
     {
         services.AddScoped<IJwtProvider, JwtProvider>();
+        return services;
+    }
+
+    public static IServiceCollection AddCartCookiesService(this IServiceCollection services)
+    {
+        services.AddScoped<ICartCookiesService, CartCookiesService>();
         return services;
     }
 }

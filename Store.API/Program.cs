@@ -28,13 +28,21 @@ builder.Services.AddControllers()
             JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(_ => { }, typeof(AutoMapperProfileConfiguration));
+
 builder.Services.AddDbContext<StoreContext>();
 builder.Services.AddPostgresRepositories();
+builder.Services.AddPostgres(builder.Configuration);
+
 builder.Services.AddHasherService();
 builder.Services.AddJwtService();
-builder.Services.AddPostgres(builder.Configuration);
+builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
+builder.Services.AddCartCookiesService();
+
 builder.Services.AddAuthorization();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -104,8 +112,6 @@ builder.Services.AddAuthentication(options =>
     };
 });
 builder.Services.AddAuthorization();
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
 #endregion
 
 var app = builder.Build();

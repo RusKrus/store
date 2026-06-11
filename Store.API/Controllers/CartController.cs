@@ -21,7 +21,6 @@ public class CartController(IMapper mapper) : ControllerBase
     /// </remarks>
     /// <param name="request"></param>
     /// <returns></returns>
-    [Authorize]
     [HttpPost("product")]
     public async Task<ActionResult> AddProductToCart(
         [FromBody] AddProductToCartRequest request,
@@ -34,11 +33,10 @@ public class CartController(IMapper mapper) : ControllerBase
     }
 
     /// <summary>
-    ///     Removes product from cart
+    ///     Removes product from the cart
     /// </summary>
     /// <param name="productId"></param>
     /// <returns></returns>
-    [Authorize]
     [HttpDelete("product")]
     public async Task<ActionResult> DeleteProductFromCart(
         [FromBody] int productId,
@@ -49,7 +47,12 @@ public class CartController(IMapper mapper) : ControllerBase
         return NoContent();
     }
 
-    [Authorize]
+    /// <summary>
+    ///     Returns current user cart
+    /// </summary>
+    /// <param name="handler"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [HttpGet("self-cart")]
     public async Task<ActionResult<CartResponse>> GetCurrentUserCart(
         GetCurrentUserCartQueryHandler handler,

@@ -6,6 +6,10 @@ namespace Store.Application.Interfaces;
 public interface ICartRepository : IBaseRepository<Cart>
 {
     Task<Cart?> GetByUserIdAsync(
-        GetCartQueryOptions options,
+        GetCartByUserQueryOptions options,
+        CancellationToken cancellationToken = default);
+
+    Task<Cart?> GetByGuidAsync(
+        GetCartByGuidQueryOptions options,
         CancellationToken cancellationToken = default);
 }

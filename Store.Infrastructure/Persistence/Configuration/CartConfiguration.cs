@@ -11,5 +11,6 @@ public class CartConfiguration : IEntityTypeConfiguration<Cart>
     {
         builder.HasKey(c => c.Id);
         builder.HasIndex(c => c.UserId).IsUnique();
+        builder.HasIndex(c => c.CartGuid).IsUnique();
     }
 }
