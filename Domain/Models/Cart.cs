@@ -15,6 +15,8 @@ public class Cart : BaseEntity
   public User User { get; private set; } = null!;
   public List<CartItem> CartItems { get; private set; } = [];
   public decimal TotalPrice => CartItems.Sum(ci => ci?.TotalPrice ?? 0);
+  public DateTime CreatedAt { get; } = DateTime.UtcNow;
+  public DateTime UpdatedAt { get; private set; } = DateTime.UtcNow;
 
   public void AddProduct(int productId, int quantity)
   {
@@ -28,6 +30,7 @@ public class Cart : BaseEntity
     {
       existingCartItem.UpdateQuantity(quantity);
     }
+    UpdatedAt = DateTime.UtcNow;
   }
 
   public bool RemoveCartItem(int productId)
@@ -35,6 +38,7 @@ public class Cart : BaseEntity
     var desiredCartItem = CartItems.FirstOrDefault(ci => ci.ProductId == productId);
     if (desiredCartItem is null) return false;
     var result = CartItems.Remove(desiredCartItem);
+    UpdatedAt = DateTime.UtcNow;
     return result;
   }
 
@@ -52,10 +56,12 @@ public class Cart : BaseEntity
         cartItem.UpdateQuantity(cartItem.Quantity + newCartItem.Quantity);
       }
     }
+    UpdatedAt = DateTime.UtcNow;
   }
 
   public void ClearCart()
   {
     CartItems.Clear();
+    UpdatedAt = DateTime.UtcNow;
   }
 }

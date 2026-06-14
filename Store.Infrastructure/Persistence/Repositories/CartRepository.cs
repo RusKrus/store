@@ -40,4 +40,9 @@ public class CartRepository(StoreContext context) : BaseRepository<Cart>(context
         var cart = await query.FirstOrDefaultAsync(c => c.CartGuid == options.CartGuid, cancellationToken);
         return cart;
     }
+
+    public async Task CleanOldCartsAsync(DateTime olderThan, CancellationToken ct)
+    {
+        await DbSet.Where(c => c.UpdatedAt < olderThan).ExecuteDeleteAsync(ct);
+    }
 }

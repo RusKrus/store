@@ -12,4 +12,8 @@ public interface ICartRepository : IBaseRepository<Cart>
     Task<Cart?> GetByGuidAsync(
         GetCartByGuidQueryOptions options,
         CancellationToken cancellationToken = default);
+
+    Task CleanOldCartsAsync(
+        DateTime olderThan,
+        CancellationToken ct = default);
 }

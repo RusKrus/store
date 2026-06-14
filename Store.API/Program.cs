@@ -14,6 +14,7 @@ using Store.Application.Interfaces;
 using Store.AutoMapperTypeConverters;
 using Store.Infrastructure.Auth;
 using Store.Infrastructure.Persistence;
+using Store.Infrastructure.Services.BackgroundServices;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +29,8 @@ builder.Services.AddControllers()
             JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+
+builder.Services.AddHostedService<CartCleaningBackgroundService>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(_ => { }, typeof(AutoMapperProfileConfiguration));
