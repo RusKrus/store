@@ -1,6 +1,8 @@
 <Solution>
   <Project Path="Application/Store.Application.csproj" />
   <Project Path="Domain/Store.Domain.csproj" />
+  <Project Path="MailService/MailService.csproj" />
   <Project Path="Store.API/Store.API.csproj" />
   <Project Path="Store.Infrastructure\Store.Infrastructure.csproj" />
+  <Project Path="Store.Shared/Store.Shared.csproj" />
 </Solution>

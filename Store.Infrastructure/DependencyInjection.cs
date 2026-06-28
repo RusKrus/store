@@ -1,3 +1,4 @@
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,6 +8,7 @@ using Store.Application.Interfaces.CartCookiesService;
 using Store.Infrastructure.Auth;
 using Store.Infrastructure.Repositories;
 using Store.Infrastructure.Extensions;
+using Store.Infrastructure.MassTransitEventBus;
 using Store.Infrastructure.Services;
 
 namespace Store.Infrastructure.Persistence;
@@ -54,6 +56,34 @@ public static class DependencyInjection
     public static IServiceCollection AddCartCookiesService(this IServiceCollection services)
     {
         services.AddScoped<ICartCookiesService, CartCookiesService>();
+        return services;
+    }
+
+    public static IServiceCollection AddEventBus(this IServiceCollection services, IConfiguration configuration)
+    {
+        var password = configuration["Rabbit:Password"];
+        var host = configuration["Rabbit:Host"];
+        var username = configuration["Rabbit:Username"];
+
+        if (password is null || host is null || username is null)
+        {
+            throw new Exception("RabbitMQ configuration is missing");
+        }
+
+        services.AddMassTransit(mtCfg =>
+        {
+            mtCfg.UsingRabbitMq((context, rcfg) =>
+            {
+                rcfg.Host(host,
+                    rhconf =>
+                    {
+                        rhconf.Username(username);
+                        rhconf.Password(password);
+                    });
+            });
+        });
+
+        services.AddScoped<IEventBus, EventBus>();
         return services;
     }
 }

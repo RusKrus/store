@@ -43,6 +43,7 @@ builder.Services.AddHasherService();
 builder.Services.AddJwtService();
 builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
 builder.Services.AddCartCookiesService();
+builder.Services.AddEventBus(builder.Configuration);
 
 builder.Services.AddAuthorization();
 

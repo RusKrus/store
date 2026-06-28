@@ -4,6 +4,7 @@ using Application.Common.Queries;
 using Store.Application.Interfaces;
 using Store.Application.Interfaces.CartCookiesService;
 using Store.Domain.Models;
+using Store.Shared.Bus.EventContracts;
 
 namespace Application.Handlers.Auth;
 
@@ -12,7 +13,9 @@ public class RegisterCommandHandler(
     ICartRepository cartRepository,
     IUnitOfWork unitOfWork,
     ICartCookiesService cartCookiesService,
-    IPasswordHasher passwordHasher)
+    IPasswordHasher passwordHasher,
+    IEventBus eventBus
+    )
 {
     public async Task<int> Handle(RegisterCommand command, CancellationToken ct)
     {
@@ -37,6 +40,9 @@ public class RegisterCommandHandler(
         }
 
         await unitOfWork.SaveChangesAsync(ct);
+
+        await eventBus.PublishAsync(new UserRegistered(user.Id, user.FullName, user.Email, user.CreatedAt), ct);
+
         return user.Id;
     }
 }
