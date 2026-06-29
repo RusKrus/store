@@ -1,0 +1,6 @@
+@Store.NotificationsAPI_HostAddress = http://localhost:5172
+
+GET {{Store.NotificationsAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

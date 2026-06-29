@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Store.Domain.Models;
 using Store.Infrastructure.Persistance.Configuration;
 

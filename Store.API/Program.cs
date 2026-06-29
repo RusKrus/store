@@ -35,7 +35,6 @@ builder.Services.AddHostedService<CartCleaningBackgroundService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(_ => { }, typeof(AutoMapperProfileConfiguration));
 
-builder.Services.AddDbContext<StoreContext>();
 builder.Services.AddPostgresRepositories();
 builder.Services.AddPostgres(builder.Configuration);
 
