@@ -1,15 +1,18 @@
-using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using RabbitMQ.Client;
 using Store.Application.Interfaces;
 using Store.Application.Interfaces.CartCookiesService;
 using Store.Infrastructure.Auth;
 using Store.Infrastructure.Repositories;
 using Store.Infrastructure.Extensions;
-using Store.Infrastructure.MassTransitEventBus;
+using Store.Infrastructure.RabbitMq.Publishers;
+using Store.Infrastructure.RabbitMq.Topology;
 using Store.Infrastructure.Services;
+using Options = Store.Infrastructure.RabbitMq.Topology.Options;
 
 namespace Store.Infrastructure.Persistence;
 
@@ -59,31 +62,29 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddEventBus(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddRabbitMq(this IServiceCollection services, IConfiguration configuration)
     {
-        var password = configuration["Rabbit:Password"];
-        var host = configuration["Rabbit:Host"];
-        var username = configuration["Rabbit:Username"];
+        services.Configure<Options>(configuration.GetSection("Rabbit"));
 
-        if (password is null || host is null || username is null)
+        services.AddSingleton<IConnection>(opt =>
         {
-            throw new Exception("RabbitMQ configuration is missing");
-        }
+            var options = opt.GetRequiredService<IOptions<Options>>().Value;
 
-        services.AddMassTransit(mtCfg =>
-        {
-            mtCfg.UsingRabbitMq((context, rcfg) =>
+            var connection = new ConnectionFactory
             {
-                rcfg.Host(host,
-                    rhconf =>
-                    {
-                        rhconf.Username(username);
-                        rhconf.Password(password);
-                    });
-            });
+                HostName = options.Host,
+                UserName = options.Username,
+                Password = options.Password,
+                VirtualHost = options.VirtualHost
+            };
+
+            return connection.CreateConnectionAsync().GetAwaiter().GetResult();
         });
 
-        services.AddScoped<IEventBus, EventBus>();
+        services.AddHostedService<ExchangeDeclaration>();
+
+        services.AddScoped<IRabbitMqPublisher, Publisher>();
+
         return services;
     }
 }

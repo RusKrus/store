@@ -3,9 +3,6 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Application.Handlers;
-using Application.Handlers.Auth;
-using Application.Handlers.Users;
-using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -41,10 +38,9 @@ builder.Services.AddPostgres(builder.Configuration);
 builder.Services.AddHasherService();
 builder.Services.AddJwtService();
 builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
-builder.Services.AddCartCookiesService();
-builder.Services.AddEventBus(builder.Configuration);
-
 builder.Services.AddAuthorization();
+
+builder.Services.AddCartCookiesService();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -115,6 +111,8 @@ builder.Services.AddAuthentication(options =>
     };
 });
 builder.Services.AddAuthorization();
+
+builder.Services.AddRabbitMq(builder.Configuration);
 #endregion
 
 var app = builder.Build();
@@ -126,13 +124,12 @@ var app = builder.Build();
 //     mapper.ConfigurationProvider.AssertConfigurationIsValid();
 // }
 app.MapControllers();
-app.UseAuthentication();
-app.UseAuthorization();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<ExceptionMiddleware>();
+
 await app.Services.MigrateDbAsync();
 
 app.Run();

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dotnet-MailService-2baec9f7-715b-4cf4-ace8-dc56aa6e2c1a</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MailKit" Version="4.17.0" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8"/>
+        <PackageReference Include="MimeKit" Version="4.17.0" />
+        <PackageReference Include="RabbitMQ.Client" Version="7.2.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Store.Shared\Store.Shared.csproj" />
+    </ItemGroup>
+</Project>

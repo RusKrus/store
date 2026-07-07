@@ -1,9 +1,9 @@
 <Solution>
   <Project Path="Application/Store.Application.csproj" />
   <Project Path="Domain/Store.Domain.csproj" />
-  <Project Path="MailService/MailService.csproj" />
   <Project Path="Store.API/Store.API.csproj" />
   <Project Path="Store.Infrastructure\Store.Infrastructure.csproj" />
+  <Project Path="Store.MailService.Service\Store.MailService.Service.csproj" />
   <Project Path="Store.Notifications.API\Store.Notifications.API.csproj" />
   <Project Path="Store.Notifications.Domain/Store.Notifications.Domain.csproj" />
   <Project Path="Store.Notifications.Infrastructure/Store.Notifications.Infrastructure.csproj" />
