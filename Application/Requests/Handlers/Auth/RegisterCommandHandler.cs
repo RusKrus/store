@@ -42,7 +42,12 @@ public class RegisterCommandHandler(
         await unitOfWork.SaveChangesAsync(ct);
 
         await publisher.PublishAsync(
-            new UserRegistered(user.Id, user.FullName, user.Email, user.CreatedAt),
+            new UserRegistered(
+                Guid.Empty,
+                user.Id,
+                user.FullName,
+                user.Email,
+                user.CreatedAt),
             ct);
 
         return user.Id;

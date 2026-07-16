@@ -6,7 +6,7 @@ namespace Store.Notifications.Infrastructure.Persistance;
 
 public class NotificationsDbContext(DbContextOptions<NotificationsDbContext> options) : DbContext(options)
 {
-    public DbSet<Notification> Notification { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

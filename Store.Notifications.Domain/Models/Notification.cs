@@ -8,6 +8,7 @@ public class Notification
     private Notification() {}
 
     private Notification(
+        Guid eventId,
         int userId,
         NotificationTypes type,
         DateTime createdAt,
@@ -15,6 +16,7 @@ public class Notification
         string message,
         JsonElement payload)
     {
+        EventId = eventId;
         UserId = userId;
         Type = type;
         CreatedAt = createdAt;
@@ -23,7 +25,24 @@ public class Notification
         Payload = payload;
     }
 
+    private Notification(
+        Guid eventId,
+        int userId,
+        NotificationTypes type,
+        DateTime createdAt,
+        string title,
+        string message)
+    {
+        EventId = eventId;
+        UserId = userId;
+        Type = type;
+        CreatedAt = createdAt;
+        Title = title;
+        Message = message;
+    }
+
     public Guid Id { get; }
+    public Guid EventId { get; private set; }
     public int UserId { get; }
     public NotificationTypes Type { get; }
 
@@ -31,10 +50,9 @@ public class Notification
     public DateTime? ReadAt { get; private set; } = null;
     public bool IsRead => ReadAt != null;
 
-    public string Title { get; }
-    public string Message { get; }
-
-    public JsonElement Payload { get; private set; }
+    public string Title { get; private set; }
+    public string Message { get; private set; }
+    public JsonElement? Payload { get; private set; } = null;
 
     public bool MarkAsRead()
     {
@@ -44,6 +62,7 @@ public class Notification
     }
 
     public static Notification Create<TPayload>(
+        Guid eventId,
         int userId,
         NotificationTypes type,
         DateTime createdAt,
@@ -53,12 +72,32 @@ public class Notification
     )
     {
         return new Notification(
+            eventId,
             userId,
             type,
             createdAt,
             title,
             message,
             JsonSerializer.SerializeToElement(payload)
+        );
+    }
+
+    public static Notification Create(
+        Guid eventId,
+        int userId,
+        NotificationTypes type,
+        DateTime createdAt,
+        string title,
+        string message
+    )
+    {
+        return new Notification(
+            eventId,
+            userId,
+            type,
+            createdAt,
+            title,
+            message
         );
     }
 }

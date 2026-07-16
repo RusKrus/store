@@ -10,6 +10,7 @@ public static class RabbitMqConstants
     public static class Queue
     {
         public static readonly string MailServiceStoreEvents = "mail-service.store-events";
+        public static readonly string NotificationsServiceStoreEvents = "notifications-service.store-events";
     }
 
     public static class RoutingKey

@@ -14,6 +14,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Store.Notifications.Domain\Store.Notifications.Domain.csproj" />
+      <ProjectReference Include="..\Store.Shared\Store.Shared.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
 </Project>
