@@ -6,15 +6,17 @@ using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using Store.Application.Interfaces;
 using Store.Application.Interfaces.CartCookiesService;
+using Store.Application.Interfaces.RabbitMq;
 using Store.Infrastructure.Auth;
 using Store.Infrastructure.Repositories;
 using Store.Infrastructure.Extensions;
+using Store.Infrastructure.Persistence;
 using Store.Infrastructure.RabbitMq.Publishers;
 using Store.Infrastructure.RabbitMq.Topology;
 using Store.Infrastructure.Services;
 using Options = Store.Infrastructure.RabbitMq.Topology.Options;
 
-namespace Store.Infrastructure.Persistence;
+namespace Store.Infrastructure;
 
 public static class DependencyInjection
 {
@@ -70,20 +72,21 @@ public static class DependencyInjection
         {
             var options = opt.GetRequiredService<IOptions<Options>>().Value;
 
-            var connection = new ConnectionFactory
+            var factory = new ConnectionFactory
             {
                 HostName = options.Host,
                 UserName = options.Username,
                 Password = options.Password,
-                VirtualHost = options.VirtualHost
+                VirtualHost = options.VirtualHost,
+                ClientProvidedName = "app:store"
             };
 
-            return connection.CreateConnectionAsync().GetAwaiter().GetResult();
+            return factory.CreateConnectionAsync().GetAwaiter().GetResult();
         });
 
         services.AddHostedService<ExchangeDeclaration>();
 
-        services.AddScoped<IRabbitMqPublisher, Publisher>();
+        services.AddSingleton<IRabbitMqPublisher, Publisher>();
 
         return services;
     }

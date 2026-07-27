@@ -11,6 +11,7 @@ using Store.Application.Interfaces;
 using Store.AutoMapperTypeConverters;
 using Store.Infrastructure.Auth;
 using Store.Infrastructure.Persistence;
+using Store.Infrastructure;
 using Store.Infrastructure.Services.BackgroundServices;
 
 
