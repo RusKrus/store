@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Store.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using Store.Infrastructure.Persistence;
 namespace Store.Infrastructure.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    partial class StoreContextModelSnapshot : ModelSnapshot
+    [Migration("20260729062141_AddOutboxMessage")]
+    partial class AddOutboxMessage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,7 +50,7 @@ namespace Store.Infrastructure.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("carts", (string)null);
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("Store.Domain.Models.CartItem", b =>
@@ -74,7 +77,7 @@ namespace Store.Infrastructure.Migrations
                     b.HasIndex("CartId", "ProductId")
                         .IsUnique();
 
-                    b.ToTable("cart_items", (string)null);
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("Store.Domain.Models.Order", b =>
@@ -108,7 +111,7 @@ namespace Store.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Store.Domain.Models.OrderItem", b =>
@@ -206,7 +209,7 @@ namespace Store.Infrastructure.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Store.Infrastructure.Persistence.OutboxMessage", b =>
@@ -221,9 +224,6 @@ namespace Store.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime?>("DeadFromUtc")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Exchange")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -233,11 +233,7 @@ namespace Store.Infrastructure.Migrations
                         .HasMaxLength(4000)
                         .HasColumnType("character varying(4000)");
 
-                    b.Property<DateTime?>("LastFailedAtUtc")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Payload")
-                        .IsRequired()
                         .HasColumnType("jsonb");
 
                     b.Property<DateTime?>("ProcessedAtUtc")
@@ -330,7 +326,7 @@ namespace Store.Infrastructure.Migrations
 
                             b1.HasKey("OrderId");
 
-                            b1.ToTable("orders");
+                            b1.ToTable("Orders");
 
                             b1.WithOwner()
                                 .HasForeignKey("OrderId");

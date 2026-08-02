@@ -8,6 +8,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 {
     public void Configure(EntityTypeBuilder<Order> builder)
     {
+        builder.ToTable("orders");
         builder.HasKey(o => o.Id);
         builder.Property(o => o.Status).HasConversion<string>();
         builder.OwnsOne(o => o.OrderReceiverInfo);

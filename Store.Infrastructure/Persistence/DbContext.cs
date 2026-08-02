@@ -6,6 +6,7 @@ namespace Store.Infrastructure.Persistence;
 
 public class StoreContext(DbContextOptions<StoreContext> options) : DbContext(options)
 {
+  public DbSet<OutboxMessage> OutboxMessages { get; set; }
   public DbSet<User> Users { get; set; }
   public DbSet<Product> Products { get; set; }
   public DbSet<Order> Orders { get; set; }
@@ -15,10 +16,13 @@ public class StoreContext(DbContextOptions<StoreContext> options) : DbContext(op
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
+    modelBuilder.ApplyConfiguration(new OutboxMessageConfiguration());
+
     modelBuilder.ApplyConfiguration(new UserConfiguration());
     modelBuilder.ApplyConfiguration(new CartConfiguration());
     modelBuilder.ApplyConfiguration(new CartItemConfiguration());
     modelBuilder.ApplyConfiguration(new OrderConfiguration());
+
     base.OnModelCreating(modelBuilder);
   }
 }

@@ -8,7 +8,7 @@ public sealed class ExchangeDeclaration(IConnection connection) : IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        var channel = await connection.CreateChannelAsync(cancellationToken: cancellationToken);
+        await using var channel = await connection.CreateChannelAsync(cancellationToken: cancellationToken);
 
         await channel.ExchangeDeclareAsync(
             exchange: RabbitMqConstants.Exchange.StoreEvents,
