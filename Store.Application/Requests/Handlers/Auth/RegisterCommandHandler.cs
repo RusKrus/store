@@ -28,29 +28,43 @@ public class RegisterCommandHandler(
 
         var passwordHashed = passwordHasher.Hash(command.Password);
         var user = new User(command.FirstName, command.LastName, command.Email, passwordHashed, null);
-        await userRepository.CreateAsync(user, ct);
 
-        var cartGuid = cartCookiesService.GetCartGuidFromCookies();
-        if (cartGuid is not null)
+        await using var transaction = await unitOfWork.BeginTransactionAsync(ct);
+
+        try
         {
-            var options = new GetCartByGuidQueryOptions(cartGuid.Value, false, false);
-            var newUserCart = await cartRepository.GetByGuidAsync(options, ct);
+            await userRepository.CreateAsync(user, ct);
 
-            if (newUserCart is not null) user.AssignCart(newUserCart);
-            cartCookiesService.DeleteCartFromCookies();
+            var cartGuid = cartCookiesService.GetCartGuidFromCookies();
+            if (cartGuid is not null)
+            {
+                var options = new GetCartByGuidQueryOptions(cartGuid.Value, false, false);
+                var newUserCart = await cartRepository.GetByGuidAsync(options, ct);
+
+                if (newUserCart is not null) user.AssignCart(newUserCart);
+                cartCookiesService.DeleteCartFromCookies();
+            }
+
+
+
+            var message = new UserRegistered(
+                Guid.NewGuid(),
+                user.Id,
+                user.FullName,
+                user.Email,
+                user.CreatedAt);
+
+            await messageWriter.SaveMessageAsync(message, ct);
+
+            await unitOfWork.SaveChangesAsync(ct);
+
+            await transaction.CommitAsync(ct);
         }
-
-        var message = new UserRegistered(
-            Guid.NewGuid(),
-            user.Id,
-            user.FullName,
-            user.Email,
-            user.CreatedAt);
-
-        await messageWriter.SaveMessageAsync(message, ct);
-
-        await unitOfWork.SaveChangesAsync(ct);
-
+        catch
+        {
+            await transaction.RollbackAsync(ct);
+        }
+        
         return user.Id;
     }
 }

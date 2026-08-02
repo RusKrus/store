@@ -22,6 +22,8 @@ public class StoreContext(DbContextOptions<StoreContext> options) : DbContext(op
     modelBuilder.ApplyConfiguration(new CartConfiguration());
     modelBuilder.ApplyConfiguration(new CartItemConfiguration());
     modelBuilder.ApplyConfiguration(new OrderConfiguration());
+    modelBuilder.ApplyConfiguration(new OrderItemsConfiguration());
+    modelBuilder.ApplyConfiguration(new ProductsConfiguration());
 
     base.OnModelCreating(modelBuilder);
   }

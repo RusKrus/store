@@ -4,7 +4,7 @@ using Store.Domain.Models;
 
 namespace Store.Infrastructure.Persistance.Configuration;
 
-public class ProductsConfigurations : IEntityTypeConfiguration<Product>
+public class ProductsConfiguration : IEntityTypeConfiguration<Product>
 {
     public void Configure(EntityTypeBuilder<Product> builder)
     {
