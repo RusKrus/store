@@ -3,6 +3,7 @@ using Application.Common.Errors;
 using Application.Common.Queries;
 using Store.Application.Interfaces;
 using Store.Application.Interfaces.CartCookiesService;
+using Store.Application.Interfaces.RabbitMq;
 using Store.Domain.Models;
 using Store.Infrastructure.RabbitMq.Publishers.EventContracts;
 
@@ -14,7 +15,7 @@ public class RegisterCommandHandler(
     IUnitOfWork unitOfWork,
     ICartCookiesService cartCookiesService,
     IPasswordHasher passwordHasher,
-    IRabbitMqPublisher publisher
+    IOutboxMessageWriter messageWriter
     )
 {
     public async Task<int> Handle(RegisterCommand command, CancellationToken ct)
@@ -39,16 +40,16 @@ public class RegisterCommandHandler(
             cartCookiesService.DeleteCartFromCookies();
         }
 
-        await unitOfWork.SaveChangesAsync(ct);
+        var message = new UserRegistered(
+            Guid.NewGuid(),
+            user.Id,
+            user.FullName,
+            user.Email,
+            user.CreatedAt);
 
-        await publisher.PublishAsync(
-            new UserRegistered(
-                Guid.Empty,
-                user.Id,
-                user.FullName,
-                user.Email,
-                user.CreatedAt),
-            ct);
+        await messageWriter.SaveMessageAsync(message, ct);
+
+        await unitOfWork.SaveChangesAsync(ct);
 
         return user.Id;
     }

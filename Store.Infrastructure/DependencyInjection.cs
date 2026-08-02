@@ -14,7 +14,7 @@ using Store.Infrastructure.Persistence;
 using Store.Infrastructure.RabbitMq.Publishers;
 using Store.Infrastructure.RabbitMq.Topology;
 using Store.Infrastructure.Services;
-using Options = Store.Infrastructure.RabbitMq.Topology.Options;
+using Store.Infrastructure.Services.BackgroundServices;
 
 namespace Store.Infrastructure;
 
@@ -66,11 +66,15 @@ public static class DependencyInjection
 
     public static IServiceCollection AddRabbitMq(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<Options>(configuration.GetSection("Rabbit"));
+        services.Configure<RabbitMqOptions>(configuration.GetSection("Rabbit"));
+        services.AddOptions<OutboxBackgroundServiceOptions>()
+            .BindConfiguration(OutboxBackgroundServiceOptions.SectionName)
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
 
         services.AddSingleton<IConnection>(opt =>
         {
-            var options = opt.GetRequiredService<IOptions<Options>>().Value;
+            var options = opt.GetRequiredService<IOptions<RabbitMqOptions>>().Value;
 
             var factory = new ConnectionFactory
             {
@@ -85,9 +89,10 @@ public static class DependencyInjection
         });
 
         services.AddHostedService<ExchangeDeclaration>();
-
         services.AddSingleton<IRabbitMqPublisher, Publisher>();
+        services.AddScoped<IOutboxMessageWriter, OutboxMessageWriter>();
 
+        services.AddHostedService<OutboxPublisherBackgroundService>();
         return services;
     }
 }

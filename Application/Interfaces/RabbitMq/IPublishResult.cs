@@ -1,10 +1,11 @@
 using System.Runtime.InteropServices.JavaScript;
+using Store.Shared.Bus.EventContracts;
 
 namespace Store.Application.Interfaces.RabbitMq;
 
-public interface IPublishResult<T>
+public interface IPublishResult
 {
-    T Message { get; }
+    IOutboxPublishMessage Message { get; }
     bool IsSuccessful { get; }
     Exception? Exception { get; }
 }

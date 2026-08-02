@@ -1,55 +1,38 @@
-using System.Text.Json;
+using System.Text;
 using RabbitMQ.Client;
-using Store.Application.Interfaces;
 using Store.Application.Interfaces.RabbitMq;
-using Store.Infrastructure.RabbitMq.Publishers.EventContracts;
 using Store.Infrastructure.RabbitMq.Topology;
-using Store.Shared.Bus;
-
 namespace Store.Infrastructure.RabbitMq.Publishers;
 
 public sealed class Publisher(IConnection connection): IRabbitMqPublisher, IAsyncDisposable
 {
-    private readonly string _exchangeName = RabbitMqConstants.Exchange.StoreEvents;
 
     private readonly SemaphoreSlim _channelLock = new(1, 1);
     private readonly SemaphoreSlim _publishLock = new(1, 1);
 
     private IChannel? _channel;
 
-    public async Task PublishAsync<T>(T message, CancellationToken cancellationToken)
-    {
-        await _publishLock.WaitAsync(cancellationToken);
-
-        _channel = await GetChannelAsync(cancellationToken);
-
-        var routingKey = GetRoutingKey(message);
-
-        var body = JsonSerializer.SerializeToUtf8Bytes(message);
-
-        SendMessageAsync(routingKey, body, cancellationToken);
-    }
-
-    public async Task<List<IPublishResult<T>>> PublishBatchAsync<T>(IReadOnlyList<T> messages, CancellationToken cancellationToken)
+    public async Task<List<IPublishResult>> PublishBatchAsync(
+        IReadOnlyList<IOutboxPublishMessage> messages,
+        CancellationToken cancellationToken)
     {
         await _publishLock.WaitAsync(cancellationToken);
         try
         {
             _channel = await GetChannelAsync(cancellationToken);
 
-            var pendingPublishes = new List<(T Message, ValueTask Task)>(messages.Count);
+            var pendingPublishes = new List<(IOutboxPublishMessage Message, ValueTask Task)>(messages.Count);
 
-            foreach (T message in messages)
+            foreach (var message in messages)
             {
-                var routingKey = GetRoutingKey(message);
-                var body = JsonSerializer.SerializeToUtf8Bytes(message);
+                var body = Encoding.UTF8.GetBytes(message.Payload);
 
-                var messageTask = SendMessageAsync(routingKey, body, cancellationToken);
+                var messageTask = SendMessageAsync(message.RoutingKey, message.Exchange, body, _channel, cancellationToken);
 
                 pendingPublishes.Add((message, messageTask));
             }
 
-            var resultList = new List<IPublishResult<T>>(messages.Count);
+            var resultList = new List<IPublishResult>(messages.Count);
 
             foreach (var (message, task) in pendingPublishes)
             {
@@ -57,11 +40,11 @@ public sealed class Publisher(IConnection connection): IRabbitMqPublisher, IAsyn
                 {
                     await task;
 
-                    resultList.Add(new PublishResult<T>(message, true, null));
+                    resultList.Add(new OutboxPublishResult(message, true, null));
                 }
                 catch (Exception e)
                 {
-                    resultList.Add(new PublishResult<T>(message, false, e));
+                    resultList.Add(new OutboxPublishResult(message, false, e));
                 }
             }
 
@@ -75,7 +58,9 @@ public sealed class Publisher(IConnection connection): IRabbitMqPublisher, IAsyn
 
     private ValueTask SendMessageAsync(
         string routingKey,
+        string exchange,
         byte[] body,
+        IChannel channel,
         CancellationToken cancellationToken)
     {
         var basicProperties = new BasicProperties
@@ -85,22 +70,13 @@ public sealed class Publisher(IConnection connection): IRabbitMqPublisher, IAsyn
             MessageId = Guid.Empty.ToString(),
         };
 
-        return _channel.BasicPublishAsync(
-            exchange: _exchangeName,
+        return channel.BasicPublishAsync(
+            exchange: exchange,
             routingKey: routingKey,
             mandatory: true,
             basicProperties,
             body,
             cancellationToken);
-    }
-
-    private string GetRoutingKey<T>(T message)
-    {
-        return message switch
-        {
-            UserRegistered => RabbitMqConstants.RoutingKey.StoreUserCreated,
-            _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
-        };
     }
 
     private async Task<IChannel> GetChannelAsync(CancellationToken cancellationToken)

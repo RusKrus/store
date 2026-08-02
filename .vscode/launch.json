@@ -1,0 +1,38 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Store.API",
+      "type": "dotnet",
+      "request": "launch",
+      "projectPath": "${workspaceFolder}/Store.API/Store.API.csproj"
+    }, 
+    {
+      "name": "Notifications.API",
+      "type": "dotnet",
+      "request": "launch",
+      "projectPath": "${workspaceFolder}/Store.Notifications.API/Store.Notifications.API.csproj"
+    },
+    {
+      "name": "Mail services",
+      "type": "dotnet",
+      "request": "launch",
+      "projectPath": "${workspaceFolder}/Store.MailService.Service/Store.MailService.Service.csproj"
+    }
+  ],
+
+  "compounds": [
+    {
+      "name": "Store: Run all services",
+      "configurations": [
+        "Notifications.API",
+        "Store.API",
+        "Mail services"
+      ],
+      "stopAll": true
+    }
+  ]
+}
