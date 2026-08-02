@@ -4,10 +4,14 @@
     <Project Path="Store.Notifications.Domain/Store.Notifications.Domain.csproj" />
     <Project Path="Store.Notifications.Infrastructure/Store.Notifications.Infrastructure.csproj" />
   </Folder>
-  <Project Path="Application/Store.Application.csproj" />
-  <Project Path="Domain/Store.Domain.csproj" />
-  <Project Path="Store.API/Store.API.csproj" />
-  <Project Path="Store.Infrastructure\Store.Infrastructure.csproj" />
+
+  <Folder Name="/Store.API/">
+    <Project Path="Store.Application/Store.Application.csproj" />
+    <Project Path="Store.Domain/Store.Domain.csproj" />
+    <Project Path="Store.API/Store.API.csproj" />
+    <Project Path="Store.Infrastructure\Store.Infrastructure.csproj" />
+  </Folder>
+
   <Project Path="Store.MailService.Service\Store.MailService.Service.csproj" />
   <Project Path="Store.Shared/Store.Shared.csproj" />
 </Solution>

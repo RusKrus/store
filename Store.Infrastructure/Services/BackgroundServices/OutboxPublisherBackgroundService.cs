@@ -26,8 +26,9 @@ public sealed class OutboxPublisherBackgroundService(
 
             var messages = await context.OutboxMessages
                 .Where(om => om.DeadFromUtc == null
-                             && (om.ProcessedAtUtc == null
-                                 || om.LastFailedAtUtc < DateTime.UtcNow.AddMinutes(-_options.BaseRetryInterval * om.Attempts)))
+                                && om.ProcessedAtUtc == null
+                                && (om.LastFailedAtUtc < DateTime.UtcNow.AddMinutes(-_options.BaseRetryInterval * om.Attempts)
+                                    || om.LastFailedAtUtc == null))
                 .OrderBy(om => om.CreatedAtUtc)
                 .Take(_options.BatchSize)
                 .ToListAsync(ct);

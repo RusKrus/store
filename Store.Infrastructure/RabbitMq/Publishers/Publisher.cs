@@ -25,9 +25,10 @@ public sealed class Publisher(IConnection connection): IRabbitMqPublisher, IAsyn
 
             foreach (var message in messages)
             {
-                var body = Encoding.UTF8.GetBytes(message.Payload);
-
-                var messageTask = SendMessageAsync(message.RoutingKey, message.Exchange, body, _channel, cancellationToken);
+                var messageTask = SendMessageAsync(
+                    message,
+                    _channel, 
+                    cancellationToken);
 
                 pendingPublishes.Add((message, messageTask));
             }
@@ -57,22 +58,23 @@ public sealed class Publisher(IConnection connection): IRabbitMqPublisher, IAsyn
     }
 
     private ValueTask SendMessageAsync(
-        string routingKey,
-        string exchange,
-        byte[] body,
+        IOutboxPublishMessage message,
         IChannel channel,
         CancellationToken cancellationToken)
     {
+        var body = Encoding.UTF8.GetBytes(message.Payload);
+
         var basicProperties = new BasicProperties
         {
             Persistent = true,
+            Type = message.Type,
             ContentType = "application/json",
-            MessageId = Guid.Empty.ToString(),
+            MessageId = message.Id.ToString()
         };
 
         return channel.BasicPublishAsync(
-            exchange: exchange,
-            routingKey: routingKey,
+            exchange: message.Exchange,
+            routingKey: message.RoutingKey,
             mandatory: true,
             basicProperties,
             body,
