@@ -45,7 +45,7 @@ public class RegisterCommandHandler(
                 cartCookiesService.DeleteCartFromCookies();
             }
 
-
+            await unitOfWork.SaveChangesAsync(ct);
 
             var message = new UserRegistered(
                 Guid.NewGuid(),
@@ -63,6 +63,7 @@ public class RegisterCommandHandler(
         catch
         {
             await transaction.RollbackAsync(ct);
+            
         }
         
         return user.Id;
