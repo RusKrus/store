@@ -31,41 +31,29 @@ public class RegisterCommandHandler(
 
         await using var transaction = await unitOfWork.BeginTransactionAsync(ct);
 
-        try
+        await userRepository.CreateAsync(user, ct);
+
+        var cartGuid = cartCookiesService.GetCartGuidFromCookies();
+        if (cartGuid is not null)
         {
-            await userRepository.CreateAsync(user, ct);
+            var options = new GetCartByGuidQueryOptions(cartGuid.Value, false, false);
+            var newUserCart = await cartRepository.GetByGuidAsync(options, ct);
 
-            var cartGuid = cartCookiesService.GetCartGuidFromCookies();
-            if (cartGuid is not null)
-            {
-                var options = new GetCartByGuidQueryOptions(cartGuid.Value, false, false);
-                var newUserCart = await cartRepository.GetByGuidAsync(options, ct);
-
-                if (newUserCart is not null) user.AssignCart(newUserCart);
-                cartCookiesService.DeleteCartFromCookies();
-            }
-
-            await unitOfWork.SaveChangesAsync(ct);
-
-            var message = new UserRegistered(
-                Guid.NewGuid(),
-                user.Id,
-                user.FullName,
-                user.Email,
-                user.CreatedAt);
-
-            await messageWriter.SaveMessageAsync(message, ct);
-
-            await unitOfWork.SaveChangesAsync(ct);
-
-            await transaction.CommitAsync(ct);
+            if (newUserCart is not null) user.AssignCart(newUserCart);
         }
-        catch
-        {
-            await transaction.RollbackAsync(ct);
-            
-        }
+
+        var message = new UserRegistered(
+            Guid.NewGuid(),
+            user.Id,
+            user.FullName,
+            user.Email,
+            user.CreatedAt);
+        await messageWriter.SaveMessageAsync(message, ct);
+        await unitOfWork.SaveChangesAsync(ct);
+        await transaction.CommitAsync(ct);
         
+        // We can delete cart from cookie only after successful transaction, cuz rollback will not recover cookie
+        if (cartGuid is not null) cartCookiesService.DeleteCartFromCookies();
         return user.Id;
     }
 }
