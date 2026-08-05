@@ -3,9 +3,9 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Store.MailService.Service.Models;
 using Store.MailService.Service.Services.Interfaces;
-using Store.Infrastructure.RabbitMq.Publishers.EventContracts;
 using Store.MailService.Service.RabbitMq.Topology;
 using Store.Shared.Bus;
+using Store.Shared.Bus.EventContracts;
 
 namespace Store.MailService.Service.RabbitMq.Consumers;
 

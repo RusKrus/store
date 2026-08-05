@@ -13,4 +13,4 @@ public class NotificationsDbContext(DbContextOptions<NotificationsDbContext> opt
         modelBuilder.ApplyConfiguration(new NotificationConfiguration());
         base.OnModelCreating(modelBuilder);
     }
-}
+} 

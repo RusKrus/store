@@ -11,6 +11,7 @@ using Store.Infrastructure.Auth;
 using Store.Infrastructure.Repositories;
 using Store.Infrastructure.Extensions;
 using Store.Infrastructure.Persistence;
+using Store.Infrastructure.RabbitMq.Outbox;
 using Store.Infrastructure.RabbitMq.Publishers;
 using Store.Infrastructure.RabbitMq.Topology;
 using Store.Infrastructure.Services;
@@ -72,24 +73,9 @@ public static class DependencyInjection
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
-        services.AddSingleton<IConnection>(opt =>
-        {
-            var options = opt.GetRequiredService<IOptions<RabbitMqOptions>>().Value;
-
-            var factory = new ConnectionFactory
-            {
-                HostName = options.Host,
-                UserName = options.Username,
-                Password = options.Password,
-                VirtualHost = options.VirtualHost,
-                ClientProvidedName = "app:store"
-            };
-
-            return factory.CreateConnectionAsync().GetAwaiter().GetResult();
-        });
-
-        services.AddHostedService<ExchangeDeclaration>();
+        services.AddSingleton<ExchangeDeclaration>();
         services.AddSingleton<IRabbitMqPublisher, Publisher>();
+        services.AddSingleton<RabbitMqConnectionProvider>();
         services.AddScoped<IOutboxMessageWriter, OutboxMessageWriter>();
 
         services.AddHostedService<OutboxPublisherBackgroundService>();

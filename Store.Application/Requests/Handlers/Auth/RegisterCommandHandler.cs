@@ -5,7 +5,7 @@ using Store.Application.Interfaces;
 using Store.Application.Interfaces.CartCookiesService;
 using Store.Application.Interfaces.RabbitMq;
 using Store.Domain.Models;
-using Store.Infrastructure.RabbitMq.Publishers.EventContracts;
+using Store.Shared.Bus.EventContracts;
 
 namespace Application.Handlers.Auth;
 
