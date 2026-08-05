@@ -8,4 +8,5 @@ public interface IPublishResult
     IOutboxPublishMessage Message { get; }
     bool IsSuccessful { get; }
     Exception? Exception { get; }
+    bool IsBrokerError { get; }
 }

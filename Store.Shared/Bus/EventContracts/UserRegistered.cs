@@ -1,6 +1,4 @@
-using Store.Shared.Bus.EventContracts;
-
-namespace Store.Infrastructure.RabbitMq.Publishers.EventContracts;
+namespace Store.Shared.Bus.EventContracts;
 
 public sealed record UserRegistered(
     Guid EventId,

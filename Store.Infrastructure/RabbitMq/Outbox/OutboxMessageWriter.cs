@@ -4,8 +4,7 @@ using Store.Infrastructure.Persistence;
 using Store.Infrastructure.RabbitMq.Routing;
 using Store.Shared.Bus.EventContracts;
 
-
-namespace Store.Infrastructure.RabbitMq.Topology;
+namespace Store.Infrastructure.RabbitMq.Outbox;
 
 public sealed class OutboxMessageWriter(StoreContext context) : IOutboxMessageWriter
 {

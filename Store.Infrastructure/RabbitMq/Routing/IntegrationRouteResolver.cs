@@ -1,4 +1,3 @@
-using Store.Infrastructure.RabbitMq.Publishers.EventContracts;
 using Store.Shared.Bus;
 using Store.Shared.Bus.EventContracts;
 

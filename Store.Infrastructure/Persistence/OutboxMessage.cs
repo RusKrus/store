@@ -29,6 +29,7 @@ public class OutboxMessage
     public int Attempts { get; private set; }
     public DateTime? LastFailedAtUtc { get; private set; }
     public DateTime? DeadFromUtc { get; private set; }
+    public DateTime? NextAttemptAtUtc { get; private set; }
     public bool IsDead => DeadFromUtc != null;
     public string? LastErrorMessage { get; private set; }
 
@@ -38,12 +39,12 @@ public class OutboxMessage
         LastErrorMessage = null;
     }
 
-    public void MarkAsFailed(string errorMessage)
+    public void MarkAsFailed(string errorMessage, double minWaitInterval, bool increaseAttempts = true)
     {
         LastErrorMessage = errorMessage;
         LastFailedAtUtc = DateTime.UtcNow;
-        Attempts++;
-
+        NextAttemptAtUtc = LastFailedAtUtc + TimeSpan.FromMilliseconds(minWaitInterval * (Attempts + 1));
+        if (increaseAttempts) Attempts++;
     }
 
     public void MarkAsDead(string errorMessage)

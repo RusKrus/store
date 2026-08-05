@@ -1,7 +1,7 @@
-using Store.Infrastructure.RabbitMq.Publishers.EventContracts;
 using Store.Notifications.Domain.Enums;
 using Store.Notifications.Domain.Models;
 using Store.Notifications.Infrastructure.Persistance;
+using Store.Shared.Bus.EventContracts;
 
 namespace Store.NotificationsAPI.Features.Notifications.CreateUserEvent;
 

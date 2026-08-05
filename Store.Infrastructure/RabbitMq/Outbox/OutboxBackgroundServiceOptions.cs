@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Store.Infrastructure.RabbitMq.Topology;
+namespace Store.Infrastructure.RabbitMq.Outbox;
 
 public sealed record OutboxBackgroundServiceOptions
 {

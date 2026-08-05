@@ -1,9 +1,9 @@
 using System.Text.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using Store.Infrastructure.RabbitMq.Publishers.EventContracts;
 using Store.Notifications.Infrastructure.RabbitMQ.Topology;
 using Store.Shared.Bus;
+using Store.Shared.Bus.EventContracts;
 
 namespace Store.NotificationsAPI.Features.Notifications.CreateUserEvent;
 

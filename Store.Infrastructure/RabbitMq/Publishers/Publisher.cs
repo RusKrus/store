@@ -1,12 +1,20 @@
 using System.Text;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using Store.Application.Interfaces.RabbitMq;
+using Store.Infrastructure.Errors.RabbitMq;
+using Store.Infrastructure.RabbitMq.Outbox;
 using Store.Infrastructure.RabbitMq.Topology;
+using Store.Shared.Bus;
+
 namespace Store.Infrastructure.RabbitMq.Publishers;
 
-public sealed class Publisher(IConnection connection): IRabbitMqPublisher, IAsyncDisposable
+public sealed class Publisher(
+    RabbitMqConnectionProvider connectionProvider,
+    ExchangeDeclaration exchangeDeclaration,
+    ILogger<Publisher> logger
+): IRabbitMqPublisher, IAsyncDisposable
 {
-
     private readonly SemaphoreSlim _channelLock = new(1, 1);
     private readonly SemaphoreSlim _publishLock = new(1, 1);
 
@@ -41,11 +49,11 @@ public sealed class Publisher(IConnection connection): IRabbitMqPublisher, IAsyn
                 {
                     await task;
 
-                    resultList.Add(new OutboxPublishResult(message, true, null));
+                    resultList.Add(new OutboxPublishResult(message, true, null, false));
                 }
                 catch (Exception e)
                 {
-                    resultList.Add(new OutboxPublishResult(message, false, e));
+                    resultList.Add(new OutboxPublishResult(message, false, e, false));
                 }
             }
 
@@ -109,11 +117,19 @@ public sealed class Publisher(IConnection connection): IRabbitMqPublisher, IAsyn
                 publisherConfirmationsEnabled: true,
                 publisherConfirmationTrackingEnabled: true);
 
+            var connection = await connectionProvider.DeclareConnectionAsync(cancellationToken);
+
             var channel = await connection.CreateChannelAsync(
                 options: channelOptions,
                 cancellationToken: cancellationToken);
 
+            await exchangeDeclaration.DeclareExchangesAsync(channel, cancellationToken);
+
             return channel;
+        }
+        catch (Exception e)
+        {
+            throw new RabbitMqInfrastructureError($"Error during setting up RabbitMq infrastructure, {e.Message}");
         }
         finally
         {
