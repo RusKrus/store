@@ -46,6 +46,8 @@ public static class DependencyInjection
         });
 
         services.AddSingleton<RabbitMqNotificationsTopology>();
+        services.AddSingleton<RetryTopologyDeclaration>();
+        services.AddSingleton<DeadTopologyDeclaration>();
 
         return services;
     }
