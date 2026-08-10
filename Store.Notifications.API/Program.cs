@@ -10,7 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddPostgres(builder.Configuration);
 builder.Services.AddRabbitMq(builder.Configuration);
-builder.Services.AddNotificationConsumers();
 builder.Services.MapFeatureFunctions();
 
 var app = builder.Build();

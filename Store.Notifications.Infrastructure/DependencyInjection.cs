@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using Store.Notifications.Infrastructure.Persistance;
+using Store.Notifications.Infrastructure.RabbitMQ.Consumer;
 using Store.Notifications.Infrastructure.RabbitMQ.Topology;
 using Options = Store.Notifications.Infrastructure.RabbitMQ.Topology.Options;
 
@@ -48,6 +49,8 @@ public static class DependencyInjection
         services.AddSingleton<RabbitMqNotificationsTopology>();
         services.AddSingleton<RetryTopologyDeclaration>();
         services.AddSingleton<DeadTopologyDeclaration>();
+
+        services.AddHostedService<RabbitMqConsumer>();
 
         return services;
     }

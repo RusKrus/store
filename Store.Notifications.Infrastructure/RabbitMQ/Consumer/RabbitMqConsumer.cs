@@ -1,21 +1,25 @@
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
+using Store.Notifications.Infrastructure.Interfaces.Handlers;
 using Store.Notifications.Infrastructure.RabbitMQ.Topology;
 using Store.Shared.Bus;
 using Store.Shared.Bus.EventContracts;
 using Store.Shared.Bus.Extensions;
 
-namespace Store.NotificationsAPI.Features.Notifications.CreateUserEvent;
+namespace Store.Notifications.Infrastructure.RabbitMQ.Consumer;
 
-public class CreateUserEventConsumer(
-    IConnection connection,
-    ILogger<CreateUserEventConsumer> logger,
+public sealed class RabbitMqConsumer(
+    IServiceScopeFactory serviceScopeFactory,
     RabbitMqNotificationsTopology topology,
     IConfiguration configuration,
-    IServiceScopeFactory serviceScopeFactory
-    ) : BackgroundService
+    ILogger<RabbitMqConsumer> logger,
+    IConnection connection) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
@@ -25,24 +29,38 @@ public class CreateUserEventConsumer(
             publisherConfirmationsEnabled: true,
             publisherConfirmationTrackingEnabled: true);
         await using var channel = await connection.CreateChannelAsync(options, cancellationToken: ct);
-
-        await topology.DeclareQueueAsync(channel, ct);
         await channel.BasicQosAsync(0, 1, false, ct);
 
+        await topology.DeclareQueueAsync(channel, ct);
+
         var consumer = new AsyncEventingBasicConsumer(channel);
+
         consumer.ReceivedAsync += async (_, args) =>
         {
             try
             {
-                var message = JsonSerializer.Deserialize<UserRegistered>(args.Body.Span)
-                              ?? throw new JsonException();
-
-                // some handler-actions with message
                 await using var scope = serviceScopeFactory.CreateAsyncScope();
-                var createUserHandler = scope.ServiceProvider.GetRequiredService<CreateUserEventHandler>();
-                await createUserHandler.HandleAsync(message, ct);
+
+                var type = args.BasicProperties.Type;
+                switch (type)
+                {
+                    case "user_registered_event":
+                    {
+                        var message = JsonSerializer.Deserialize<UserRegistered>(args.Body.Span)
+                                      ?? throw new JsonException();
+                        var handler = scope.ServiceProvider.GetRequiredService<IMessageHandler<UserRegistered>>();
+                        await handler.HandleAsync(message, ct);
+                        break;
+                    }
+                    default:
+                    {
+                        logger.LogError("Unknown message type: {type}", type);
+                        throw new InvalidOperationException($"Unknown message type: {type}");
+                    }
+                }
+
             }
-            catch (Exception exception)
+            catch(Exception exception)
             {
                 logger.LogError(exception, "User created notifications message processing failed");
                 var retries = args.BasicProperties.GetRetryCount();
@@ -70,7 +88,7 @@ public class CreateUserEventConsumer(
                     {
                         await channel.BasicPublishAsync(
                             exchange: RabbitMqConstants.Exchange.StoreNotificationsRetry,
-                            routingKey: RabbitMqConstants.RoutingKey.NotificationsUserRegisteredRetry,
+                            routingKey: RabbitMqConstants.RoutingKey.NotificationsServiceRetry,
                             mandatory: true,
                             basicProperties,
                             body: args.Body,

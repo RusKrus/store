@@ -16,7 +16,7 @@ public static class RabbitMqConstants
         public static readonly string MailServiceStoreEvents = "mail-service.store-events";
 
         public static readonly string NotificationsServiceStoreEvents = "notifications-service.store-events";
-        public static readonly string NotificationsUserRegisteredRetry = "notifications-user-registered.retry";
+        public static readonly string NotificationsServiceRetry = "notifications-service.retry";
         public static readonly string NotificationsDead = "notifications.dead";
     }
 
@@ -24,7 +24,7 @@ public static class RabbitMqConstants
     {
         public static readonly string StoreUserCreated = "store-user-created";
 
-        public static readonly string NotificationsUserRegisteredRetry = "notifications-user-registered-retry";
+        public static readonly string NotificationsServiceRetry = "notifications-service-retry";
         public static readonly string NotificationsDead = "notifications-dead";
     }
 }
