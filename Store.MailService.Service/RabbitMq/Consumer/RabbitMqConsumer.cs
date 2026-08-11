@@ -7,7 +7,7 @@ using Store.MailService.Service.RabbitMq.Topology;
 using Store.Shared.Bus;
 using Store.Shared.Bus.EventContracts;
 
-namespace Store.MailService.Service.RabbitMq.Consumers;
+namespace Store.MailService.Service.RabbitMq.Consumer;
 
 public sealed class RabbitMqConsumer(
   IConnection connection,

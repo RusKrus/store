@@ -6,9 +6,7 @@ public static class MapFeatures
 {
     public static IServiceCollection MapFeatureFunctions(this IServiceCollection services)
     {
-        services
-            .AddNotificationHandlers()
-            .AddNotificationConsumers();
+        services.AddNotificationHandlers();
 
         return services;
     }

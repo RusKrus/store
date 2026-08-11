@@ -44,8 +44,8 @@ public class RabbitMqNotificationsTopology(
         await retryTopologyDeclaration.DeclareRetryQueue(
             channel,
             RabbitMqConstants.Queue.NotificationsServiceStoreEvents,
-            RabbitMqConstants.Queue.NotificationsUserRegisteredRetry,
-            RabbitMqConstants.RoutingKey.NotificationsUserRegisteredRetry,
+            RabbitMqConstants.Queue.NotificationsServiceRetry,
+            RabbitMqConstants.RoutingKey.NotificationsServiceRetry,
             ct
         );
     }

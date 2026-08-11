@@ -42,6 +42,8 @@ public class RegisterCommandHandler(
             if (newUserCart is not null) user.AssignCart(newUserCart);
         }
 
+        await unitOfWork.SaveChangesAsync(ct);
+
         var message = new UserRegistered(
             Guid.NewGuid(),
             user.Id,
@@ -50,6 +52,7 @@ public class RegisterCommandHandler(
             user.CreatedAt);
         await messageWriter.SaveMessageAsync(message, ct);
         await unitOfWork.SaveChangesAsync(ct);
+        
         await transaction.CommitAsync(ct);
         
         // We can delete cart from cookie only after successful transaction, cuz rollback will not recover cookie

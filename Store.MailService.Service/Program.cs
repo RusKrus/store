@@ -1,4 +1,4 @@
-using Store.MailService.Service.RabbitMq.Consumers;
+using Store.MailService.Service.RabbitMq.Consumer;
 using Store.MailService.Service.Configuration;
 using Store.MailService.Service.Services.Implementation;
 using Store.MailService.Service.Services.Interfaces;
