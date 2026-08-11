@@ -5,7 +5,6 @@ using Store.Application.Interfaces.RabbitMq;
 using Store.Infrastructure.Errors.RabbitMq;
 using Store.Infrastructure.RabbitMq.Outbox;
 using Store.Infrastructure.RabbitMq.Topology;
-using Store.Shared.Bus;
 
 namespace Store.Infrastructure.RabbitMq.Publishers;
 
