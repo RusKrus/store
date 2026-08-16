@@ -21,4 +21,8 @@
     <ItemGroup>
       <ProjectReference Include="..\Store.Shared\Store.Shared.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Persistence\Data\" />
+    </ItemGroup>
 </Project>
