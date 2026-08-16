@@ -192,22 +192,25 @@ public sealed class RabbitMqConsumer(
             body: $"<h1>Hello, {message.UserName}</h1><p>Your account has been created.</p>"
           );
 
-          var status = MailStatus.Failed;
-          try
-          {
-            var isSuccess = await mailService.SendEmailAsync(mailData, cancellationToken);
-            if (!isSuccess) logger.LogError("Failed to send email to {email} for event of registration", message.Email);
-            status = isSuccess ? MailStatus.Processed : MailStatus.Failed;
-          }
-          finally
-          {
-            await SaveMessageToDb(
+          await SaveMessageToDbAsync(
             message.EventId, 
             message.MessageType, 
             mailData, 
-            status);
+            MailStatus.Pending,
+            cancellationToken);
+
+          var isSuccess = false;
+          try
+          {
+            isSuccess = await mailService.SendEmailAsync(mailData, cancellationToken);
+            if (!isSuccess) logger.LogError("Failed to send email to {email} for event of registration", message.Email);
           }
-        
+          catch (Exception sendingMailException)
+          {
+            logger.LogError(sendingMailException, "Failed to send email to {email} for event of registration", message.Email);
+          }
+
+          await ChangeMessageStatusAsync(message.EventId, isSuccess ? MailStatus.Processed : MailStatus.Failed, cancellationToken);
           break;
       }
       default:
@@ -218,7 +221,12 @@ public sealed class RabbitMqConsumer(
     }
   }
 
-  private async Task SaveMessageToDb(Guid messageId, string type, MailData message, MailStatus status)
+  private async Task SaveMessageToDbAsync(
+    Guid messageId, 
+    string type, 
+    MailData message, 
+    MailStatus status,
+    CancellationToken cancellationToken)
   {
     const string sql = """
                 INSERT INTO processed_messages (
@@ -272,8 +280,22 @@ public sealed class RabbitMqConsumer(
       message.Body
     };
     
-    await using var sqliteConnection = sqliteConnectionFactory.CreateConnection();
+    var command = new CommandDefinition(commandText: sql, parameters: parameters, cancellationToken: cancellationToken);
+    await using var dbConnection = sqliteConnectionFactory.CreateConnection();
+    await dbConnection.ExecuteAsync(command);
+  }
 
-    await sqliteConnection.ExecuteAsync(sql, parameters);
+  private async Task ChangeMessageStatusAsync(Guid messageId, MailStatus status, CancellationToken cancellationToken)
+  {
+    const string sql = "UPDATE processed_messages SET processing_status = @Status WHERE message_id = @MessageId";
+    var parameters = new
+    {
+      Status = status.ToString(),
+      MessageId = messageId
+    };
+
+    var command = new CommandDefinition(commandText: sql, parameters: parameters, cancellationToken: cancellationToken);
+    await using var dbConnection = sqliteConnectionFactory.CreateConnection();
+    await dbConnection.ExecuteAsync(command);
   }
 }
