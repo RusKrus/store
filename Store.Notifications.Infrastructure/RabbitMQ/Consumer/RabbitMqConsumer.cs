@@ -1,8 +1,10 @@
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
@@ -60,9 +62,29 @@ public sealed class RabbitMqConsumer(
                 }
 
             }
+            catch (JsonException exception)
+            {
+                logger.LogError(exception, "Failed to deserialize message");
+                await channel.BasicNackAsync(
+                    args.DeliveryTag,
+                    multiple: false,
+                    requeue: false,
+                    cancellationToken: ct);
+                return;
+            }
+            catch (DbUpdateException exception) when (exception.InnerException is PostgresException pgEx && pgEx.SqlState == "23505")
+            {
+                // NOTE: we assume we use postgres. Later it can be improved and made db agnostic by ef core exception package 
+                logger.LogError(exception, "Duplicate notifications message processing failed due to be inserted in notification db");
+                await channel.BasicAckAsync(
+                    args.DeliveryTag,
+                    multiple: false,
+                    cancellationToken: ct);
+                return;
+            }
             catch(Exception exception)
             {
-                logger.LogError(exception, "User created notifications message processing failed");
+                logger.LogError(exception, "Notifications message processing failed");
                 var retries = args.BasicProperties.GetRetryCount();
 
                 if (retries >= maxRetryCount)

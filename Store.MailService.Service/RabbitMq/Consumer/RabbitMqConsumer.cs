@@ -50,7 +50,7 @@ public sealed class RabbitMqConsumer(
 
         await PrepareAndSendEmail(message, type, ct);
       }
-      catch (SerializationException exception)
+      catch (JsonException exception)
       {
         logger.LogError(exception, "Failed to deserialize message");
 
@@ -61,6 +61,14 @@ public sealed class RabbitMqConsumer(
           cancellationToken: ct);
 
         return;
+      }
+      catch (InvalidOperationException exception)
+      {
+        await channel.BasicNackAsync(
+          args.DeliveryTag,
+          multiple: false,
+          requeue: false,
+          cancellationToken: ct);
       }
       catch (SqliteException exception) when (exception.SqliteExtendedErrorCode == SQLitePCL.raw.SQLITE_CONSTRAINT_PRIMARYKEY)
       {
@@ -74,6 +82,31 @@ public sealed class RabbitMqConsumer(
       }
       catch (Exception exception)
       {
+        var stringMessageId = args.BasicProperties.MessageId;
+        if (stringMessageId is not null && Guid.TryParse(stringMessageId, out var messageId))
+        {
+          var isAlreadySaved = await CheckIfExists(messageId, ct) > 0;
+          if (isAlreadySaved)
+          {
+            await channel.BasicAckAsync(
+              args.DeliveryTag,
+              multiple: false,
+              cancellationToken: ct);
+            return;
+          }
+        }
+        else
+        {
+          logger.LogError(exception, "Found message without id, sent to DLQ.");
+          await channel.BasicNackAsync(
+            args.DeliveryTag,
+            multiple: false,
+            requeue: false,
+            cancellationToken: ct);
+          return;
+        }
+      
+        
         logger.LogError(exception,  "Failed to process message by mail service");
         var retries = args.BasicProperties.GetRetryCount();
 
@@ -297,5 +330,26 @@ public sealed class RabbitMqConsumer(
     var command = new CommandDefinition(commandText: sql, parameters: parameters, cancellationToken: cancellationToken);
     await using var dbConnection = sqliteConnectionFactory.CreateConnection();
     await dbConnection.ExecuteAsync(command);
+  }
+
+  private async Task<int> CheckIfExists(Guid messageId, CancellationToken ct)
+  {
+    const string sql = "SELECT COUNT(*) FROM processed_messages WHERE message_id = @MessageId";
+    var parameters = new { MessageId = messageId };
+
+    var command = new CommandDefinition(sql, parameters, cancellationToken: ct);
+
+    try
+    {
+      await using var dbConnection = sqliteConnectionFactory.CreateConnection();
+      var count = await dbConnection.ExecuteScalarAsync<int>(command);
+      return count;
+    }
+    catch(Exception exception)
+    {
+      logger.LogError(exception, "Failed to check if message exists in database");
+      return 0;
+    }
+
   }
 }
