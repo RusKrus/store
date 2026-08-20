@@ -1,4 +1,3 @@
-using System.Runtime.Serialization;
 using System.Text.Json;
 using Dapper;
 using Microsoft.Data.Sqlite;
