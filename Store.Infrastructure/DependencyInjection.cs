@@ -67,7 +67,9 @@ public static class DependencyInjection
 
     public static IServiceCollection AddRabbitMq(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<RabbitMqOptions>(configuration.GetSection("Rabbit"));
+        var connectionString = configuration.GetConnectionString("Rabbit")
+                               ?? throw new InvalidOperationException("Rabbit connection string is not defined");
+
         services.AddOptions<OutboxBackgroundServiceOptions>()
             .BindConfiguration(OutboxBackgroundServiceOptions.SectionName)
             .ValidateDataAnnotations()
@@ -75,7 +77,7 @@ public static class DependencyInjection
 
         services.AddSingleton<ExchangeDeclaration>();
         services.AddSingleton<IRabbitMqPublisher, Publisher>();
-        services.AddSingleton<RabbitMqConnectionProvider>();
+        services.AddSingleton(new RabbitMqConnectionProvider(connectionString));
         services.AddScoped<IOutboxMessageWriter, OutboxMessageWriter>();
 
         services.AddHostedService<OutboxPublisherBackgroundService>();
