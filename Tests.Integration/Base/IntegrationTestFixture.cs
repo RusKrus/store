@@ -1,6 +1,9 @@
 using System.Data.Common;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using Respawn;
+using Store.Infrastructure.Persistence;
 using Testcontainers.PostgreSql;
 using Testcontainers.RabbitMq;
 
@@ -24,21 +27,30 @@ public class IntegrationTestFixture : IAsyncLifetime
 
     private DbConnection _dbConnection = null!;
 
-    public readonly TestApplicationFactory Factory = new (
-        PsqContainer.GetConnectionString(),
-        RabbitMqContainer.GetConnectionString()
-        );
+    public TestApplicationFactory Factory { get; private set; } = null!;
 
-    public HttpClient Client = null!;
+    public HttpClient Client { get; private set; } = null!;
 
     public async Task InitializeAsync()
     {
         await PsqContainer.StartAsync();
         await RabbitMqContainer.StartAsync();
+
+        Factory = new TestApplicationFactory(
+            PsqContainer.GetConnectionString(),
+            RabbitMqContainer.GetConnectionString()
+        );
+        Client = Factory.CreateClient();
+
+        await using (var scope = Factory.Services.CreateAsyncScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<StoreContext>();
+            await dbContext.Database.MigrateAsync();
+        }
+
         _dbConnection = new NpgsqlConnection(PsqContainer.GetConnectionString());
         await _dbConnection.OpenAsync();
         await InitializeRespawnAsync();
-        Client = Factory.CreateClient();
     }
 
     public async Task ResetDatabaseAsync()
@@ -50,17 +62,17 @@ public class IntegrationTestFixture : IAsyncLifetime
     {
         _respawner = await Respawner.CreateAsync(_dbConnection, new RespawnerOptions
         {
-            SchemasToInclude = ["store"],
+            SchemasToInclude = ["public"],
             DbAdapter = DbAdapter.Postgres
         });
     }
 
     public async Task DisposeAsync()
     {
+        await Factory.DisposeAsync();
         await PsqContainer.DisposeAsync();
         await RabbitMqContainer.DisposeAsync();
         await _dbConnection.DisposeAsync();
-        await Factory.DisposeAsync();
         Client.Dispose();
     }
 }
