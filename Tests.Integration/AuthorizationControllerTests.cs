@@ -35,7 +35,7 @@ public class AuthorizationControllerTests(IntegrationTestFixture fixture) : Inte
     {
         var request = new { email = "doesNotExists@gmail.com", password = "notExistingPassword" };
         var response = await fixture.Client.PostAsJsonAsync("login", request);
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
     [Fact]
