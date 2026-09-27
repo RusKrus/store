@@ -8,11 +8,18 @@ namespace Tests.Integration.TestUtils;
 
 public static class SeedHelpers
 {
-    public static async Task AddUserAsync(StoreContext context, string firstName, string lastName, string email, string password)
+    public static async Task<User> AddUserAsync(
+        StoreContext context,
+        string firstName,
+        string lastName,
+        string email,
+        string password,
+        UserRole role = UserRole.Admin)
     {
         var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
-        var newUser = new User(firstName, lastName, email, hashedPassword, UserRole.Admin);
+        var newUser = new User(firstName, lastName, email, hashedPassword, role);
         await context.Users.AddAsync(newUser);
+        return newUser;
     }
 
     public static async Task CreateProductAsync(
@@ -27,7 +34,7 @@ public static class SeedHelpers
         await context.Products.AddAsync(product);
     }
 
-    public static async Task AuthenticateAsAsync(
+    public static void AuthenticateAsAsync(
         this HttpClient client,
         int userId,
         string userEmail,
@@ -35,14 +42,16 @@ public static class SeedHelpers
         UserRole role)
     {
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(TestAuthHandler.SchemaName);
-        client.DefaultRequestHeaders.Add("UserId", userId.ToString());
-        client.DefaultRequestHeaders.Add("UserEmail", userEmail);
-        client.DefaultRequestHeaders.Add("Name", fullName);
-        client.DefaultRequestHeaders.Add("Role", role.ToString());
+        client.DefaultRequestHeaders.Add(TestAuthHandler.UserIdHeader, userId.ToString());
+        client.DefaultRequestHeaders.Add(TestAuthHandler.EmailHeader, userEmail);
+        client.DefaultRequestHeaders.Add(TestAuthHandler.NameHeader, fullName);
+        client.DefaultRequestHeaders.Add(TestAuthHandler.RoleHeader, role.ToString());
     }
 
-    public static async Task CreateCartItemAsync(StoreContext context, int productId, int quantity)
+    public static void CreateCartItem(StoreContext context, int userId, int productId, int quantity)
     {
-
+        var cart = new Cart(userId);
+        cart.AddProduct(productId, quantity);
+        context.Carts.Add(cart);
     }
 }

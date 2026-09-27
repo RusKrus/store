@@ -1,6 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using Store.Domain.Enums;
-using Store.Domain.Models;
 using Store.Infrastructure.Persistence;
 
 namespace Tests.Integration.Base;
@@ -10,6 +8,22 @@ public class IntegrationTestBase(IntegrationTestFixture fixture) : IAsyncLifetim
     protected virtual Task SeedDataAsync(StoreContext context)
     {
         return Task.CompletedTask;
+    }
+
+    protected async Task ExecuteWithContext(Action<StoreContext> action)
+    {
+        await ExecuteWithContext(context =>
+        {
+            action(context);
+            return Task.CompletedTask;
+        });
+    }
+
+    protected async Task ExecuteWithContext(Func<StoreContext, Task> action)
+    {
+        await using var scope = fixture.Factory.Services.CreateAsyncScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<StoreContext>();
+        await action(dbContext);
     }
 
     protected async Task<TResult> ExecuteWithContext<TResult>(Func<StoreContext, Task<TResult>> action)

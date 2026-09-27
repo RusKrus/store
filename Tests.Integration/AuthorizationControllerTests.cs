@@ -22,8 +22,9 @@ public class AuthorizationControllerTests(IntegrationTestFixture fixture) : Inte
     [Fact]
     public async Task LoginTest_ReturnsOk()
     {
+        var client = fixture.Factory.CreateClient();
         var request = new { email = "test@gmail.com", password = "strong_password" };
-        var response = await fixture.Client.PostAsJsonAsync("login", request);
+        var response = await client.PostAsJsonAsync("login", request);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var result = await response.Content.ReadAsStringAsync();
@@ -33,14 +34,16 @@ public class AuthorizationControllerTests(IntegrationTestFixture fixture) : Inte
     [Fact]
     public async Task LoginTest_ReturnsErrorForWrongCredentials()
     {
+        var client = fixture.Factory.CreateClient();
         var request = new { email = "doesNotExists@gmail.com", password = "notExistingPassword" };
-        var response = await fixture.Client.PostAsJsonAsync("login", request);
+        var response = await client.PostAsJsonAsync("login", request);
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
     [Fact]
     public async Task Register_ReturnsOk()
     {
+        var client = fixture.Factory.CreateClient();
         var request = new
         {
             firstName = "testName",
@@ -48,7 +51,7 @@ public class AuthorizationControllerTests(IntegrationTestFixture fixture) : Inte
             email = "testUser@example.com",
             password = "string"
         };
-        var response = await fixture.Client.PostAsJsonAsync("register", request);
+        var response = await client.PostAsJsonAsync("register", request);
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var result = await response.Content.ReadAsStringAsync();
@@ -58,6 +61,7 @@ public class AuthorizationControllerTests(IntegrationTestFixture fixture) : Inte
     [Fact]
     public async Task Register_ReturnsErrorForExistingEmail()
     {
+        var client = fixture.Factory.CreateClient();
         var request = new
         {
             firstName = _firstName,
@@ -65,7 +69,7 @@ public class AuthorizationControllerTests(IntegrationTestFixture fixture) : Inte
             email = _email,
             password = _password
         };
-        var response = await fixture.Client.PostAsJsonAsync("register", request);
+        var response = await client.PostAsJsonAsync("register", request);
 
         response.StatusCode.Should().Be(HttpStatusCode.Conflict);
     }

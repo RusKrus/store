@@ -16,7 +16,7 @@ public sealed class TestAuthHandler(
     public const string SchemaName = "Test";
 
     public const string UserIdHeader = "X-Test-User-Id";
-    public const string EmailHeader = "X-Test-User-Name";
+    public const string EmailHeader = "X-Test-User-Email";
     public const string NameHeader = "X-Test-User-Name";
     public const string RoleHeader = "X-Test-User-Role";
 
@@ -44,10 +44,10 @@ public sealed class TestAuthHandler(
 
         Claim[] claims =
         [
-            new Claim(ClaimTypes.NameIdentifier, userId),
-            new Claim(ClaimTypes.Email, userEmail),
-            new Claim(ClaimTypes.Role, roleString),
-            new Claim(ClaimTypes.Name, name)
+            new (ClaimTypes.NameIdentifier, userId),
+            new (ClaimTypes.Email, userEmail),
+            new (ClaimTypes.Role, roleString),
+            new (ClaimTypes.Name, name)
         ];
 
         var identity = new ClaimsIdentity(claims, SchemaName);

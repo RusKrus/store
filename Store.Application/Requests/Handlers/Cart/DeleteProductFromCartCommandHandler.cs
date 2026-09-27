@@ -19,7 +19,7 @@ public class DeleteProductFromCartCommandHandler(
         if (currentUser is null)
         {
             var cartGuid = cartCookiesService.GetCartGuidFromCookies();
-            if (cartGuid is null) throw new NotFoundException("User's cart is not found");
+            if (cartGuid is null) throw new NotFoundException("Anonymous user's cart is not found");
             var options = new GetCartByGuidQueryOptions(cartGuid.Value, true, false);
             userCart = await cartRepository.GetByGuidAsync(options, cancellationToken);
         }
