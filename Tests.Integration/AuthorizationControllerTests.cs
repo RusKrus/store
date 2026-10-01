@@ -22,7 +22,7 @@ public class AuthorizationControllerTests(IntegrationTestFixture fixture) : Inte
     [Fact]
     public async Task LoginTest_ReturnsOk()
     {
-        var client = fixture.Factory.CreateClient();
+        using var client = Fixture.Factory.CreateClient();
         var request = new { email = "test@gmail.com", password = "strong_password" };
         var response = await client.PostAsJsonAsync("login", request);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -34,7 +34,7 @@ public class AuthorizationControllerTests(IntegrationTestFixture fixture) : Inte
     [Fact]
     public async Task LoginTest_ReturnsErrorForWrongCredentials()
     {
-        var client = fixture.Factory.CreateClient();
+        using var client = Fixture.Factory.CreateClient();
         var request = new { email = "doesNotExists@gmail.com", password = "notExistingPassword" };
         var response = await client.PostAsJsonAsync("login", request);
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -43,7 +43,7 @@ public class AuthorizationControllerTests(IntegrationTestFixture fixture) : Inte
     [Fact]
     public async Task Register_ReturnsOk()
     {
-        var client = fixture.Factory.CreateClient();
+        using var client = Fixture.Factory.CreateClient();
         var request = new
         {
             firstName = "testName",
@@ -61,7 +61,7 @@ public class AuthorizationControllerTests(IntegrationTestFixture fixture) : Inte
     [Fact]
     public async Task Register_ReturnsErrorForExistingEmail()
     {
-        var client = fixture.Factory.CreateClient();
+        using var client = Fixture.Factory.CreateClient();
         var request = new
         {
             firstName = _firstName,

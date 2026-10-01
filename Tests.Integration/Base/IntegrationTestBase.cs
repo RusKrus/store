@@ -5,6 +5,8 @@ namespace Tests.Integration.Base;
 
 public class IntegrationTestBase(IntegrationTestFixture fixture) : IAsyncLifetime
 {
+    protected IntegrationTestFixture Fixture => fixture;
+
     protected virtual Task SeedDataAsync(StoreContext context)
     {
         return Task.CompletedTask;

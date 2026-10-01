@@ -5,7 +5,6 @@ using Store.Domain.Enums;
 using Store.Infrastructure.Persistence;
 using Tests.Integration.Base;
 using Tests.Integration.TestUtils;
-using Xunit.Sdk;
 
 namespace Tests.Integration;
 
@@ -40,7 +39,7 @@ public sealed class CartControllerTests(IntegrationTestFixture fixture) : Integr
     [Fact]
     public async Task AddProductTest_AddsProductToAuthorizedUserCart()
     {
-        var client = fixture.Factory.CreateClient();
+        using var client = Fixture.Factory.CreateClient();
         Authorize(client);
         var request = new { productId = _seedProductId, quantity = 1  };
         var addProductResponse = await client.PostAsJsonAsync("api/cart/product", request);
@@ -57,7 +56,7 @@ public sealed class CartControllerTests(IntegrationTestFixture fixture) : Integr
     [Fact]
     public async Task AddProductTest_SavesCartIdInCookieForUnauthorizedUser()
     {
-        var client = fixture.Factory.CreateClient();
+        using var client = Fixture.Factory.CreateClient();
         var request = new { productId = _seedProductId, quantity = 1  };
         var addProductResponse = await client.PostAsJsonAsync("api/cart/product", request);
 
@@ -87,7 +86,7 @@ public sealed class CartControllerTests(IntegrationTestFixture fixture) : Integr
     [Fact]
     public async Task AddProductTest_ShowsErrorIfTooBigQuantity()
     {
-        var client = fixture.Factory.CreateClient();
+        using var client = Fixture.Factory.CreateClient();
         Authorize(client);
         var request = new { productId = _seedProductId, quantity = 1000 };
         var response = await client.PostAsJsonAsync("api/cart/product", request);
@@ -98,7 +97,7 @@ public sealed class CartControllerTests(IntegrationTestFixture fixture) : Integr
     [Fact]
     public async Task DeleteProductFromCart_RemovesProductFromAuthorizedUserCart()
     {
-        var client = fixture.Factory.CreateClient();
+        using var client = Fixture.Factory.CreateClient();
         var userId = Authorize(client);
         await ExecuteWithContext(async context =>
         {

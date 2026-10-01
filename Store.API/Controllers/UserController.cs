@@ -10,8 +10,6 @@ using Store.API.Contracts.Requests.User;
 using Store.API.Contracts.Response;
 using Store.API.Contracts.Response.Users;
 using Store.API.Extensions;
-using Store.Domain.Enums;
-using Store.Domain.Models;
 
 namespace Store.Api.Controllers;
 

@@ -3,11 +3,20 @@ using Store.Domain.Enums;
 using Store.Domain.Models;
 using Store.Infrastructure.Persistence;
 using Tests.Integration.Fakes;
+using Tests.Integration.Data;
 
 namespace Tests.Integration.TestUtils;
 
 public static class SeedHelpers
 {
+    public static async Task<User> AddUserAsync(StoreContext context, UsersData.AddUserData data)
+    {
+        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(data.Password);
+        var newUser = new User(data.FirstName, data.LastName, data.Email, hashedPassword, data.Role);
+        await context.Users.AddAsync(newUser);
+        return newUser;
+    }
+    
     public static async Task<User> AddUserAsync(
         StoreContext context,
         string firstName,
