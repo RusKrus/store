@@ -1,0 +1,7 @@
+@use '@angular/material' as mat;
+
+.app-header__text-field {
+  @include mat.form-field-overrides((
+    outlined-container-shape: var(--mat-sys-corner-extra-large),
+  ))
+}

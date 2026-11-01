@@ -1,0 +1,10 @@
+@use '@angular/material' as mat;
+
+.footer__link-item {
+  min-width: fit-content;
+  @include mat.list-overrides((
+    list-item-label-text-color: var(--mat-sys-surface),
+    list-item-hover-label-text-color: var(--mat-sys-primary-container),
+    list-item-hover-state-layer-color: var(--mat-sys-primary-container)
+  ))
+}
