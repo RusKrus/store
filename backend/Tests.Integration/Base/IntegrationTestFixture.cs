@@ -11,7 +11,7 @@ namespace Tests.Integration.Base;
 
 public class IntegrationTestFixture : IAsyncLifetime
 {
-    private static readonly PostgreSqlContainer PsqContainer = new PostgreSqlBuilder("postgres:latest")
+    private static readonly PostgreSqlContainer PsqlContainer = new PostgreSqlBuilder("postgres:latest")
         .WithDatabase("store")
         .WithUsername("postgres")
         .WithPassword("5432")
@@ -33,11 +33,11 @@ public class IntegrationTestFixture : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        await PsqContainer.StartAsync();
+        await PsqlContainer.StartAsync();
         await RabbitMqContainer.StartAsync();
 
         Factory = new TestApplicationFactory(
-            PsqContainer.GetConnectionString(),
+            PsqlContainer.GetConnectionString(),
             RabbitMqContainer.GetConnectionString()
         );
         Client = Factory.CreateClient();
@@ -48,7 +48,7 @@ public class IntegrationTestFixture : IAsyncLifetime
             await dbContext.Database.MigrateAsync();
         }
 
-        _dbConnection = new NpgsqlConnection(PsqContainer.GetConnectionString());
+        _dbConnection = new NpgsqlConnection(PsqlContainer.GetConnectionString());
         await _dbConnection.OpenAsync();
         await InitializeRespawnAsync();
     }
@@ -70,7 +70,7 @@ public class IntegrationTestFixture : IAsyncLifetime
     public async Task DisposeAsync()
     {
         await Factory.DisposeAsync();
-        await PsqContainer.DisposeAsync();
+        await PsqlContainer.DisposeAsync();
         await RabbitMqContainer.DisposeAsync();
         await _dbConnection.DisposeAsync();
         Client.Dispose();

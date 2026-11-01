@@ -7,15 +7,11 @@ using Store.API.Contracts.Requests.Common;
 using Store.API.Contracts.Requests.Product;
 using Store.API.Contracts.Response;
 using Store.API.Extensions;
-using Store.Domain.Enums;
-using Store.Domain.Models;
-
 namespace Store.Api.Controllers;
 
 /// <summary>
 ///     General actions under products in store
 /// </summary>
-/// <param name="productService"></param>
 [ApiController]
 [Route("api/[controller]")]
 public class ProductController(IMapper mapper) : ControllerBase

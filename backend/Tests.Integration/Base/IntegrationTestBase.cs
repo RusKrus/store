@@ -11,15 +11,15 @@ public class IntegrationTestBase(IntegrationTestFixture fixture) : IAsyncLifetim
 {
     protected IntegrationTestFixture Fixture => fixture;
 
-    /// <summary>
-    ///     Настройки сериализации самого API: camelCase и enum'ы строками.
-    ///     ReadFromJsonAsync без опций берёт JsonSerializerDefaults.Web, где enum — число,
-    ///     поэтому значение "Customer" не разбирается.
-    /// </summary>
     protected JsonSerializerOptions JsonReadOptions => fixture.Factory.Services
         .GetRequiredService<IOptions<JsonOptions>>()
         .Value.JsonSerializerOptions;
 
+    /**
+     * <summary>
+     *  Uses ReadFromJsonAsync with real backend's JSON settings
+     * </summary> 
+     */
     protected async Task<T?> ReadJsonAsync<T>(HttpResponseMessage response, CancellationToken ct = default)
     {
         return await response.Content.ReadFromJsonAsync<T>(JsonReadOptions, ct);
