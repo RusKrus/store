@@ -9,7 +9,10 @@
 
     <ItemGroup>
         <PackageReference Include="Dapper" Version="2.1.79" />
+        <PackageReference Include="FluentMigrator.Runner" Version="8.0.1" />
+        <PackageReference Include="FluentMigrator.Runner.SQLite" Version="8.0.1" />
         <PackageReference Include="MailKit" Version="4.17.0" />
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.10" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
         <PackageReference Include="MimeKit" Version="4.17.0" />
         <PackageReference Include="RabbitMQ.Client" Version="7.2.1" />
@@ -17,5 +20,9 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Store.Shared\Store.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Persistence\Data\" />
     </ItemGroup>
 </Project>

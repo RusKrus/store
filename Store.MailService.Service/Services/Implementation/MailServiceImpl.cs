@@ -63,25 +63,25 @@ public class MailServiceImpl(IOptions<MailSettings> settings, ILogger<MailServic
 
             #region Send
 
-            using (var client = new SmtpClient())
+            using var client = new SmtpClient();
+            
+            try
             {
-                try
-                {
-                    await client.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.StartTls, cancellationToken);
-                    client.AuthenticationMechanisms.Remove("XOAUTH2");
-                    await client.AuthenticateAsync(_settings.UserName, _settings.Password, cancellationToken);
-                    await client.SendAsync(mail, cancellationToken);
-                }
-                catch(Exception e)
-                {
-                    logger.LogError(e, e.Message);
-                }
-                finally
-                {
-                    await client.DisconnectAsync(true, cancellationToken);
-                    client.Dispose();
-                }
+                await client.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.StartTls, cancellationToken);
+                client.AuthenticationMechanisms.Remove("XOAUTH2");
+                await client.AuthenticateAsync(_settings.UserName, _settings.Password, cancellationToken);
+                await client.SendAsync(mail, cancellationToken);
             }
+            catch(Exception e)
+            {
+                logger.LogError(e, e.Message);
+                throw;
+            }
+            finally
+            {
+                await client.DisconnectAsync(true, cancellationToken);
+            }
+            
             #endregion
 
             return true;
