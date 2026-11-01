@@ -24,27 +24,7 @@ public class AddProductToCartCommandHandler(
 
         if (currentUser is null)
         {
-            var cartGuid = cartCookiesService.GetCartGuidFromCookies();
-            if (cartGuid is null)
-            {
-                userCart = new Cart(null);
-                cartGuid = userCart.CartGuid;
-                cartCookiesService.SaveCartInCookies(cartGuid.Value);
-                await cartRepository.CreateAsync(userCart, cancellationToken);
-            }
-            else
-            {
-                var options = new GetCartByGuidQueryOptions(cartGuid.Value, true, true);
-                userCart = await cartRepository.GetByGuidAsync(options, cancellationToken);
-                if (userCart is null)
-                {
-                    cartCookiesService.DeleteCartFromCookies();
-                    userCart = new Cart(null);
-                    cartGuid = userCart.CartGuid;
-                    cartCookiesService.SaveCartInCookies(cartGuid.Value);
-                    await cartRepository.CreateAsync(userCart, cancellationToken);
-                }
-            }
+            userCart = await GetOrCreateAnonymousCartAsync(cancellationToken);
         }
         else
         {
@@ -66,11 +46,35 @@ public class AddProductToCartCommandHandler(
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-//     private Task CreateAndSaveAnonymousCartAsync()
-//     {
-//         userCart = new Cart(null);
-//         cartGuid = userCart.CartGuid;
-//         cartCookiesService.SaveCartInCookies(cartGuid.Value);
-//         await cartRepository.CreateAsync(userCart, cancellationToken);
-//     }
+    private async Task<Cart> GetOrCreateAnonymousCartAsync(CancellationToken cancellationToken)
+    {       
+            Cart? userCart;
+            var cartGuid = cartCookiesService.GetCartGuidFromCookies();
+            if (cartGuid is null)
+            {
+                userCart = await CreateNewCart();
+            }
+            else
+            {
+                var options = new GetCartByGuidQueryOptions(cartGuid.Value, true, true);
+                userCart = await cartRepository.GetByGuidAsync(options, cancellationToken);
+                if (userCart is null)
+                {
+                    // remove incorrect cookie
+                    cartCookiesService.DeleteCartFromCookies();
+                    userCart = await CreateNewCart();
+                }
+            }
+
+            async Task<Cart> CreateNewCart()
+            {
+                    var newUserCart = new Cart(null);
+                    cartGuid = newUserCart.CartGuid;
+                    cartCookiesService.SaveCartInCookies(cartGuid.Value);
+                    await cartRepository.CreateAsync(newUserCart, cancellationToken);
+                    return newUserCart;
+            }
+
+            return userCart;
+    }
 }

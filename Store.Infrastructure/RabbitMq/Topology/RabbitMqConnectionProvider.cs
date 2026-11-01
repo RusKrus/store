@@ -3,10 +3,9 @@ using RabbitMQ.Client;
 
 namespace Store.Infrastructure.RabbitMq.Topology;
 
-public class RabbitMqConnectionProvider(IOptions<RabbitMqOptions> rabbitOptions) : IAsyncDisposable
+public class RabbitMqConnectionProvider(string connectionString) : IAsyncDisposable
 {
     private readonly SemaphoreSlim _connectionDeclarationLock = new (1, 1);
-    private readonly RabbitMqOptions _options = rabbitOptions.Value;
     private IConnection? _connection;
 
     public async Task<IConnection> DeclareConnectionAsync(CancellationToken ct) 
@@ -26,10 +25,7 @@ public class RabbitMqConnectionProvider(IOptions<RabbitMqOptions> rabbitOptions)
 
             var factory = new ConnectionFactory
             {
-                HostName = _options.Host,
-                UserName = _options.Username,
-                Password = _options.Password,
-                VirtualHost = _options.VirtualHost,
+                Uri = new Uri(connectionString),
                 ClientProvidedName = "app:store",
                 AutomaticRecoveryEnabled = true,
                 TopologyRecoveryEnabled = true,

@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations;
 using Application.Commands.Cart;
 using Application.Handlers.Carts;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Store.API.Contracts.Requests.Cart;
 using Store.API.Contracts.Response.Cart;
@@ -37,9 +36,9 @@ public class CartController(IMapper mapper) : ControllerBase
     /// </summary>
     /// <param name="productId"></param>
     /// <returns></returns>
-    [HttpDelete("product")]
+    [HttpDelete("product/{productId:int}")]
     public async Task<ActionResult> DeleteProductFromCart(
-        [FromBody] int productId,
+        [FromRoute] int productId,
         DeleteProductFromCartCommandHandler handler,
         CancellationToken cancellationToken)
     {

@@ -10,6 +10,7 @@
     <Project Path="Store.Domain/Store.Domain.csproj" />
     <Project Path="Store.API/Store.API.csproj" />
     <Project Path="Store.Infrastructure\Store.Infrastructure.csproj" />
+    <Project Path="Tests.Integration\Tests.Integration.csproj" />
   </Folder>
 
   <Project Path="Store.MailService.Service\Store.MailService.Service.csproj" />

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Http;
 using Store.Application.Interfaces.CartCookiesService;
-using Store.Domain.Models;
 
 namespace Store.Infrastructure.Services;
 
