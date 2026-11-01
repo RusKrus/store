@@ -1,5 +1,4 @@
 using System.Net;
-using System.Net.Http.Json;
 using FluentAssertions;
 using Store.API.Contracts.Response;
 using Store.API.Contracts.Response.Users;
@@ -48,8 +47,7 @@ public sealed class UserControllerTests(IntegrationTestFixture fixture) : Integr
 
         var response = await client.GetAsync("api/user");
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        var result = await response.Content.ReadFromJsonAsync<PaginationResponse<UserResponse>>();
+        var result = await ReadJsonAsync<PaginationResponse<UserResponse>>(response);
         result.Should().NotBeNull();
         result.Items.Count.Should().Be(3);
         result.Total.Should().Be(3);

@@ -1,4 +1,8 @@
+using System.Net.Http.Json;
+using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Store.Infrastructure.Persistence;
 
 namespace Tests.Integration.Base;
@@ -6,6 +10,20 @@ namespace Tests.Integration.Base;
 public class IntegrationTestBase(IntegrationTestFixture fixture) : IAsyncLifetime
 {
     protected IntegrationTestFixture Fixture => fixture;
+
+    /// <summary>
+    ///     Настройки сериализации самого API: camelCase и enum'ы строками.
+    ///     ReadFromJsonAsync без опций берёт JsonSerializerDefaults.Web, где enum — число,
+    ///     поэтому значение "Customer" не разбирается.
+    /// </summary>
+    protected JsonSerializerOptions JsonReadOptions => fixture.Factory.Services
+        .GetRequiredService<IOptions<JsonOptions>>()
+        .Value.JsonSerializerOptions;
+
+    protected async Task<T?> ReadJsonAsync<T>(HttpResponseMessage response, CancellationToken ct = default)
+    {
+        return await response.Content.ReadFromJsonAsync<T>(JsonReadOptions, ct);
+    }
 
     protected virtual Task SeedDataAsync(StoreContext context)
     {
