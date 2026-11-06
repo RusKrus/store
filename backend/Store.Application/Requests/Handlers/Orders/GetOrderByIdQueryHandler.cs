@@ -11,7 +11,6 @@ public class GetOrderByIdQueryHandler(IOrderRepository repository, ICurrentUserP
     public async Task<Order> Handle(int id, CancellationToken cancellationToken)
     {
         var currentUser = currentUserProvider.GetCurrentUser();
-        if (currentUser is null) throw new UnauthorizedException();
 
         var options = new GetOrderQueryOptions(id, true, false);
         var order = await repository.GetByIdAsync(options, cancellationToken);

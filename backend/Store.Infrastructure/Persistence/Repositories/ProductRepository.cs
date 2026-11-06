@@ -1,6 +1,8 @@
 using Application.Common.PaginationOptions;
 using Application.Common.PaginationResult;
+using Microsoft.EntityFrameworkCore;
 using Store.Application.Interfaces;
+using Store.Domain.Enums;
 using Store.Infrastructure.Extensions;
 using Store.Domain.Models;
 using Store.Infrastructure.Persistence;
@@ -21,5 +23,18 @@ public class ProductRepository(StoreContext context) : BaseRepository<Product>(c
             query = query.Where(p => p.Name.ToLower().Contains(searchString.ToLower()));
         }
         return await query.PaginateAsync(options, cancellationToken);
+    }
+
+    public async Task<List<ProductCategory>> GetAllProductCategoryNames(bool showAll,
+        CancellationToken cancellationToken = default)
+    {
+        if (showAll)
+        {
+            return Enum.GetValues<ProductCategory>().Select(c => c).ToList();
+        }
+        else
+        {
+            return await DbSet.Select(p => p.Category).Distinct().ToListAsync(cancellationToken);
+        }
     }
 }

@@ -33,6 +33,7 @@ public sealed class CartControllerTests(IntegrationTestFixture fixture) : Integr
             "Test description",
             10,
             10,
+            ProductCategory.Unknown,
             _seedProductId);
     }
 

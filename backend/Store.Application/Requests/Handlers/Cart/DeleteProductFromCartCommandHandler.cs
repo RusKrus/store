@@ -14,7 +14,7 @@ public class DeleteProductFromCartCommandHandler(
 {
     public async Task Handle(int productId, CancellationToken cancellationToken)
     {
-        var currentUser = currentUserProvider.GetCurrentUser();
+        var currentUser = currentUserProvider.GetCurrentUserOrDefault();
         Cart? userCart;
         if (currentUser is null)
         {

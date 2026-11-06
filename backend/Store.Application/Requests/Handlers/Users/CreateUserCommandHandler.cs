@@ -11,7 +11,6 @@ public class CreateUserCommandHandler(IUserRepository repository, IUnitOfWork un
     public async Task<int> Handle(CreateUserCommand command, CancellationToken cancellationToken)
     {
         var currentUser = currentUserProvider.GetCurrentUser();
-        if (currentUser is null) throw new NotFoundException("Current user is not authorized.");
         if (!currentUser.Role.HasGreaterRole(command.Role))
         {
             throw new ForbiddenException("You are unable to do this");

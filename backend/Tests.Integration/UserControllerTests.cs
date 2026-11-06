@@ -16,26 +16,41 @@ namespace Tests.Integration;
 [Collection("Integration-base")]
 public sealed class UserControllerTests(IntegrationTestFixture fixture) : IntegrationTestBase(fixture)
 {
-    private readonly UsersData.AddUserData _firstUser = new (
+    private readonly MockData.AddUserData _firstUser = new (
         "First", 
         "Customer", 
         "firstCustomer@gmail.com", 
         "strong_password", 
         UserRole.Customer);
     
-    private readonly UsersData.AddUserData _secondUser = new (
+    private readonly MockData.AddUserData _secondUser = new (
         "Second", 
         "Customer", 
         "secondCustomer@gmail.com", 
         "strong_password", 
         UserRole.Customer);
     
-    private readonly UsersData.AddUserData _firstAdmin = new (
+    private readonly MockData.AddUserData _firstAdmin = new (
         "First", 
         "Admin", 
         "firstAdmin@gmail.com", 
         "strong_password", 
         UserRole.Admin);
+
+    private readonly MockData.AddUserData _thirdTempUser = new(
+        "Third", 
+        "Customer", 
+        "thirdCustomer@gmail.com", 
+        "strong_password", 
+        UserRole.Customer);
+    
+    private readonly MockData.AddUserData _secondTempAdmin = new(
+        "Second", 
+        "Admin",
+        "secondAdmin@gmail.com", 
+        "strong_password", 
+        UserRole.Admin);
+    
 
     protected override async Task SeedDataAsync(StoreContext context)
     {
@@ -125,7 +140,7 @@ public sealed class UserControllerTests(IntegrationTestFixture fixture) : Integr
     #endregion
 
     #region CreateUserTests
-[Fact]
+    [Fact]
     public async Task CreateUserTest_CreatesAndReturnsNewUserId()
     {
         using var client = Fixture.Factory.CreateClient();
@@ -232,26 +247,160 @@ public sealed class UserControllerTests(IntegrationTestFixture fixture) : Integr
     #endregion
 
     #region DeleteUserTests
-    // [Fact]
-    // public async Task DeleteUserTest_DeletesUser()
-    // {
-    //     using var client = Fixture.Factory.CreateClient();
-    //     await AuthAsAdmin(client);
+    [Fact]
+    public async Task DeleteUserTest_AdminCanDeleteUser()
+    {
+        using var client = Fixture.Factory.CreateClient();
+        await AuthAsAdmin(client);
 
-    //     var userToDelete = 
+        await ExecuteWithContext(async context =>
+        {
+            await SeedHelpers.AddUserAsync(context, _thirdTempUser);
+            await context.SaveChangesAsync();
+        });
 
-    //     var response = await client.DeleteAsync()
-    // }
+        var testUser = await ExecuteWithContext(async context =>
+            await context.Users.FirstAsync(u => u.Email == _thirdTempUser.Email));
+
+        var response = await client.DeleteAsync($"api/User/{testUser.Id}");
+
+        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+    }
+
+    [Fact]
+    public async Task DeleteUserTest_AdminCantDeleteAdminAdnAbove()
+    {
+        using var client = Fixture.Factory.CreateClient();
+        await AuthAsAdmin(client);
+
+        await ExecuteWithContext(async context =>
+        {
+            await SeedHelpers.AddUserAsync(context, _secondTempAdmin);
+            await context.SaveChangesAsync();
+        });
+
+        var testUser = await ExecuteWithContext(async context =>
+            await context.Users.FirstAsync(u => u.Email == _secondTempAdmin.Email));
+
+        var response = await client.DeleteAsync($"api/User/{testUser.Id}");
+
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+
+    [Fact]
+    public async Task UserCantDeleteUserAndAbove()
+    {
+        using var client = Fixture.Factory.CreateClient();
+        await AuthAsUser(client);
+
+        await ExecuteWithContext(async context =>
+        {
+            await SeedHelpers.AddUserAsync(context, _thirdTempUser);
+            await context.SaveChangesAsync();
+        });
+
+        var testUser = await ExecuteWithContext(async context =>
+            await context.Users.FirstAsync(u => u.Email == _thirdTempUser.Email));
+
+        var response = await client.DeleteAsync($"api/User/{testUser.Id}");
+
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
     #endregion
 
-    #region helpers
+    #region UpdateUserTests
+    [Fact]
+    public async Task UpdateUser_UserCantUpdateAnotherUser()
+    {
+        using var client = Fixture.Factory.CreateClient();
+        await AuthAsUser(client);
+
+        var currentTestUserData =
+            await ExecuteWithContext(async context => await context.Users.FirstAsync(u => u.Email == _firstUser.Email));
+
+        var requestBody = new UpdateUserRequest()
+        {
+            FirstName = "FirstUserChanged", 
+            LastName = "LastNameChanged", 
+            Email = "firstUserLastNameChanged@gmail.com"
+        };
+
+        var response = await client.PutAsJsonAsync($"api/User/{currentTestUserData.Id}", requestBody);
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+
+        var updatedTestUserData = await ExecuteWithContext(async context =>
+            await context.Users.FirstOrDefaultAsync(u => u.Email == requestBody.Email));
+        updatedTestUserData.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task UpdateUser_AdminCanUpdateUser()
+    {
+        using var client = Fixture.Factory.CreateClient();
+        await AuthAsAdmin(client);
+
+        var currentTestUserData =
+            await ExecuteWithContext(async context => await context.Users.FirstAsync(u => u.Email == _firstUser.Email));
+
+        var requestBody = new UpdateUserRequest()
+        {
+            FirstName = "FirstUserChanged", 
+            LastName = "LastNameChanged", 
+            Email = "firstUserLastNameChanged@gmail.com"
+        };
+
+        var response = await client.PutAsJsonAsync($"api/User/{currentTestUserData.Id}", requestBody);
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var updatedTestUserData = await ExecuteWithContext(async context =>
+            await context.Users.FirstOrDefaultAsync(u => u.Email == requestBody.Email));
+    
+        updatedTestUserData.Should().NotBeNull();
+        updatedTestUserData.FirstName.Should().Be(requestBody.FirstName);
+        updatedTestUserData.LastName.Should().Be(requestBody.LastName);
+
+    }
+
+    [Fact]
+    public async Task UpdateUser_AdminCantUpgradeUserToAdmin()
+    {
+        using var client = Fixture.Factory.CreateClient();
+        await AuthAsAdmin(client);
+
+        var currentTestUserData =
+            await ExecuteWithContext(async context => await context.Users.FirstAsync(u => u.Email == _firstUser.Email));
+
+        var requestBody = new UpdateUserRequest()
+        {
+            FirstName = "FirstUserChanged", 
+            LastName = "LastNameChanged", 
+            Email = "firstUserLastNameChanged@gmail.com",
+            Role = UserRole.Admin
+        };
+
+        var response = await client.PutAsJsonAsync($"api/User/{currentTestUserData.Id}", requestBody);
+
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+
+        var updatedTestUserData = await ExecuteWithContext(async context =>
+            await context.Users.FirstOrDefaultAsync(u => u.Email == _firstUser.Email));
+
+        updatedTestUserData?.Role.Should().Be(UserRole.Customer);
+
+    }
+    #endregion
+
+    // TODO: search for createUser tests
+
+    #region Helpers
     private bool ValidateUser(UserResponse? user, string name, string email, UserRole role)
     {
         if (user is null) return false;
         return user.FullName == name && user.Email == email && user.Role == role;
     }
 
-    private bool ValidateUser(UserResponse? user, UsersData.AddUserData existingUser)
+    private bool ValidateUser(UserResponse? user, MockData.AddUserData existingUser)
     {
         if (user is null) return false;
         return user.FullName == existingUser.FullName && user.Email == existingUser.Email && user.Role == existingUser.Role;

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Store.Domain.Enums;
 
 namespace Store.API.Contracts.Requests.Product;
 
@@ -15,5 +16,7 @@ public record CreateProductRequest {
     [Required]
     [Range(0.01, 999999999)]
     public decimal Price { get; init; }
+    [Required]
+    public ProductCategory Category { get; init; }
     public int Quantity { get; init; } = 0;
 };

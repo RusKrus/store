@@ -8,16 +8,18 @@ public record UpdateUserRequest
     [Required]
     [Length(1, 50)]
     public required string FirstName { get; init; }
+    
     [Required]
     [Length(1, 50)]
     public required string LastName { get; init; }
+
     [Required]
     [EmailAddress]
     [Length(1, 50)]
     public required string Email { get; init; }
-    [Required]
+
     [Length(1, 50)]
-    public required string Password { get; init; }
-    [Required]
-    public UserRole Role { get; init; }
+    public string? Password { get; init; }
+
+    public UserRole? Role { get; init; }
 }

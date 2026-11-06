@@ -13,10 +13,6 @@ public class UpdateProfileHandler(
     public async Task<User> Handle(UpdateProfileCommand command, CancellationToken cancellationToken)
     {
         var currentUser = currentUserProvider.GetCurrentUser();
-        if (currentUser is null)
-        {
-            throw new UnauthorizedException("User is logged out");
-        }
 
         var userToUpdate = await repository.GetByIdAsync(currentUser.Id, cancellationToken);
         if (userToUpdate is null)

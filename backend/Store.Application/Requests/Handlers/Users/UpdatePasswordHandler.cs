@@ -13,10 +13,6 @@ public class UpdatePasswordHandler(
     public async Task Handle(UpdatePasswordCommand request, CancellationToken cancellationToken)
     {
         var currentUser = currentUserProvider.GetCurrentUser();
-        if (currentUser == null)
-        {
-            throw new UnauthorizedException();
-        }
 
         var userToUpdate = await repository.GetByIdAsync(currentUser.Id, cancellationToken);
         if (userToUpdate == null)

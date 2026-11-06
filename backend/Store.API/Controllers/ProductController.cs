@@ -7,6 +7,8 @@ using Store.API.Contracts.Requests.Common;
 using Store.API.Contracts.Requests.Product;
 using Store.API.Contracts.Response;
 using Store.API.Extensions;
+using Store.Domain.Enums;
+
 namespace Store.Api.Controllers;
 
 /// <summary>
@@ -89,6 +91,7 @@ public class ProductController(IMapper mapper) : ControllerBase
     ///     Updates selected product
     /// </summary>
     /// <param name="newProductData"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
     [HttpPut("{id:int}")]
     [Authorize]
@@ -103,10 +106,17 @@ public class ProductController(IMapper mapper) : ControllerBase
             newProductData.Name,
             newProductData.Description,
             newProductData.Price,
-            newProductData.Quantity
+            newProductData.Quantity,
+            newProductData.Category
         );
         var result = await handler.Handle(command, ct);
         var response = mapper.Map<ProductResponse>(result);
         return response;
+    }
+
+    [HttpGet("categories")]
+    public async Task<ActionResult<List<ProductCategory>>> GetProductCategories([FromQuery] bool? showAll, GetCategoriesHandler handler, CancellationToken ct)
+    {
+        return await handler.Handle(showAll, ct);
     }
 }
