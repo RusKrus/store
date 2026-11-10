@@ -9,10 +9,6 @@ public class GetSelfProfileQueryHandler(IUserRepository repository, ICurrentUser
     public async Task<User> Handle(CancellationToken cancellationToken)
     {
         var currentUser =  provider.GetCurrentUser();
-        if (currentUser is null)
-        {
-            throw new UnauthorizedException();
-        }
 
         var user = await repository.GetByIdAsync(currentUser.Id, cancellationToken);
 

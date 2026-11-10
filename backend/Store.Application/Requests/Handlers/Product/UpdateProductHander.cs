@@ -11,10 +11,6 @@ public class UpdateProductHandler (IProductRepository repository, IUnitOfWork un
     public async Task<Product> Handle(UpdateProductCommand request, CancellationToken ct)
     {
         var currentUser = currentUserProvider.GetCurrentUser();
-        if (currentUser is null)
-        {
-            throw new UnauthorizedException();
-        }
 
         if (!currentUser.Role.IsAdminOrAbove())
         {
@@ -26,7 +22,7 @@ public class UpdateProductHandler (IProductRepository repository, IUnitOfWork un
         {
             throw new NotFoundException("Product not found");
         }
-        product.Update(request.Name, request.Description, request.Price, request.Quantity);
+        product.Update(request.Name, request.Description, request.Price, request.Quantity, request.Category);
         await unitOfWork.SaveChangesAsync(ct);
         return product;
     }

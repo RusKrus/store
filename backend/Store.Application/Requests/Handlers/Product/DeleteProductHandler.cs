@@ -9,10 +9,6 @@ public class DeleteProductHandler(IProductRepository productRepository, IUnitOfW
     public async Task Handle(int id, CancellationToken ct)
     {
         var currentUser = currentUserProvider.GetCurrentUser();
-        if (currentUser is null)
-        {
-            throw new UnauthorizedException();
-        }
 
         if (!currentUser.Role.IsAdminOrAbove())
         {

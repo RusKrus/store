@@ -9,7 +9,6 @@ public class CancelOrderCommandHandler(IOrderRepository repository, IUnitOfWork 
     public async Task Handle(int id, CancellationToken ct)
     {
         var currentUser = currentUserProvider.GetCurrentUser();
-        if (currentUser is null) throw new UnauthorizedException();
 
         var order = await repository.GetByIdAsync(id, ct);
         if (order is null) throw new NotFoundException();

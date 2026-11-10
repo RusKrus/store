@@ -18,6 +18,10 @@ public class CreateUserCommandHandler(IUserRepository repository, IUnitOfWork un
 
         var hashedPassword = passwordHasher.Hash(command.Password);
         var newUser = new User(command.FirstName, command.LastName, command.Email, hashedPassword, command.Role);
+
+        var existingUser = await repository.GetByEmailAsync(command.Email, cancellationToken);
+        if (existingUser is not null) throw new ConflictException("User with such email already exists");
+
         await repository.CreateAsync(newUser, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return newUser.Id;

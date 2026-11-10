@@ -19,7 +19,7 @@ public class AddProductToCartCommandHandler(
         CancellationToken cancellationToken
         )
     {
-        var currentUser = currentUserProvider.GetCurrentUser();
+        var currentUser = currentUserProvider.GetCurrentUserOrDefault();
         Cart? userCart;
 
         if (currentUser is null)

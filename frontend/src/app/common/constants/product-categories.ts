@@ -1,0 +1,26 @@
+export const PRODUCT_CATEGORIES = {
+  Unknown: 'Unknown',
+  Laptops: 'Laptops',
+  DesktopComputers: 'Desktop Computers',
+  Monitors: 'Monitors',
+  ComputerComponents: 'Computer Components',
+  Peripherals: 'Peripherals',
+  StorageDevices: 'Storage Devices',
+  Smartphones: 'Smartphones',
+  Tablets: 'Tablets',
+  SmartWatches: 'Smart Watches',
+  Accessories: 'Accessories',
+  TVs: 'TVs',
+  AudioEquipment: 'Audio Equipment',
+  LargeAppliances: 'Large Appliances',
+  SmallAppliances: 'Small Appliances',
+  KitchenAppliances: 'Kitchen Appliances',
+  GamingConsoles: 'Gaming Consoles',
+  GamingAccessories: 'Gaming Accessories',
+  SmartHome: 'Smart Home',
+  NetworkEquipment: 'Network Equipment',
+  OfficeEquipment: 'Office Equipment',
+  Other: 'Other',
+} as const;
+
+export type CategoryLabel = keyof typeof PRODUCT_CATEGORIES;

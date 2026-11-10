@@ -15,7 +15,6 @@ public class CreateOrderHandler(
     public async Task<int> Handle(CreateOrderCommand command, CancellationToken ct)
     {
         var currentUser = currentUserProvider.GetCurrentUser();
-        if (currentUser is null) throw new UnauthorizedException();
 
         var getCartOptions = new GetCartByUserQueryOptions(currentUser.Id, true, true);
         var currentUserCart = await cartRepository.GetByUserIdAsync(getCartOptions, ct);

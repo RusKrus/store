@@ -10,7 +10,15 @@ public class User : BaseEntity
 
   public User(string firstName, string lastName, string email, string passwordHash, UserRole? role)
   {
-    SetValue(firstName, lastName, email, passwordHash, role);
+    if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(passwordHash))
+    {
+      throw new ValidationException("Attempt to create user with incorrect data");
+    }
+    FirstName = firstName;
+    LastName = lastName;
+    Email = email;
+    PasswordHash = passwordHash;
+    Role = role ?? UserRole.Customer;
     CreatedAt = DateTime.UtcNow;
   }
   public string FirstName { get; private set; } = null!;
@@ -24,7 +32,7 @@ public class User : BaseEntity
   public Cart? Cart { get; private set; } = null;
   public List<Order>? Orders { get; private set; } = null;
 
-  public void Update(string firstName, string lastName, string email, string passwordHash, UserRole? role)
+  public void Update(string firstName, string lastName, string email, string? passwordHash, UserRole? role)
   {
     SetValue(firstName, lastName, email, passwordHash, role);
     UpdatedAt = DateTime.UtcNow;
@@ -66,16 +74,16 @@ public class User : BaseEntity
     }
   }
 
-  private void SetValue(string firstName, string lastName, string email, string passwordHash, UserRole? role)
+  private void SetValue(string firstName, string lastName, string email, string? passwordHash, UserRole? role)
   {
-    if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(passwordHash))
+    if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName) || string.IsNullOrWhiteSpace(email))
     {
       throw new ValidationException("User data entered incorrectly");
     }
     FirstName = firstName;
     LastName = lastName;
     Email = email;
-    PasswordHash = passwordHash;
-    Role = role ?? UserRole.Customer;
+    if (!string.IsNullOrWhiteSpace(passwordHash)) PasswordHash = passwordHash;
+    if (role is not null) Role = role.Value;
   }
 }

@@ -13,7 +13,7 @@ public class GetCurrentUserCartQueryHandler(
 {
     public async Task<Cart> Handle(CancellationToken cancellationToken)
     {
-        var currentUser = currentUserProvider.GetCurrentUser();
+        var currentUser = currentUserProvider.GetCurrentUserOrDefault();
 
         if (currentUser is null)
         {

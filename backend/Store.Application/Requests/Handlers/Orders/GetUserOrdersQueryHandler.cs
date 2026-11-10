@@ -14,7 +14,6 @@ public class GetUserOrdersQueryHandler(
     public async Task<PaginationResult<Order>> Handle(GetUserOrdersQuery request, CancellationToken cancellationToken)
     {
         var currentUser = currentUserProvider.GetCurrentUser();
-        if (currentUser is null) throw new UnauthorizedException();
 
         return await repository.GetPaginatedListAsync(request.options, request.status, cancellationToken);
     }

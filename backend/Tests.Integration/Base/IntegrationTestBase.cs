@@ -1,4 +1,8 @@
+using System.Net.Http.Json;
+using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Store.Infrastructure.Persistence;
 
 namespace Tests.Integration.Base;
@@ -6,6 +10,20 @@ namespace Tests.Integration.Base;
 public class IntegrationTestBase(IntegrationTestFixture fixture) : IAsyncLifetime
 {
     protected IntegrationTestFixture Fixture => fixture;
+
+    protected JsonSerializerOptions JsonReadOptions => fixture.Factory.Services
+        .GetRequiredService<IOptions<JsonOptions>>()
+        .Value.JsonSerializerOptions;
+
+    /**
+     * <summary>
+     *  Uses ReadFromJsonAsync with real backend's JSON settings
+     * </summary> 
+     */
+    protected async Task<T?> ReadJsonAsync<T>(HttpResponseMessage response, CancellationToken ct = default)
+    {
+        return await response.Content.ReadFromJsonAsync<T>(JsonReadOptions, ct);
+    }
 
     protected virtual Task SeedDataAsync(StoreContext context)
     {

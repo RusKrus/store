@@ -11,10 +11,10 @@ public class CreateProductHandler(IProductRepository productRepository, IUnitOfW
     public async Task<int> Handle(CreateProductCommand request, CancellationToken ct = default)
     {
         var currentUser = currentUserProvider.GetCurrentUser();
-        if (currentUser is null) throw new UnauthorizedException();
+
         if (!currentUser.Role.IsAdminOrAbove()) throw new ForbiddenException();
 
-        var product = new Product(request.Name, request.Description, request.Price, request.Quantity);
+        var product = new Product(request.Name, request.Description, request.Price, request.Quantity, request.Category);
         await productRepository.CreateAsync(product, ct);
         await unitOfWork.SaveChangesAsync(ct);
         return product.Id;

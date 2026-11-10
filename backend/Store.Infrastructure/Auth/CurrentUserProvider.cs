@@ -9,7 +9,30 @@ namespace Store.Infrastructure.Auth;
 
 public class CurrentUserProvider(IHttpContextAccessor httpContextAccessor) : ICurrentUserProvider
 {
-    public CurrentUserModel? GetCurrentUser()
+    public CurrentUserModel GetCurrentUser()
+    {
+        var user = httpContextAccessor.HttpContext?.User;
+        if (user is null) throw new UnauthorizedException("You are not logged in");
+
+        var isIdValid = int.TryParse(user.FindFirstValue(ClaimTypes.NameIdentifier), out var userIdClaim);
+        var email = user.FindFirstValue(ClaimTypes.Email);
+        var name = user.FindFirstValue(ClaimTypes.Name);
+        var isRoleValid = Enum.TryParse<UserRole>(user.FindFirstValue(ClaimTypes.Role), out var roleClaim);
+
+        if (!isIdValid || email is null || name is null || !isRoleValid)
+        {
+            throw new UnauthorizedException("You are not logged in");
+        }
+
+        return new CurrentUserModel(
+            userIdClaim,
+            email,
+            name,
+            roleClaim
+            );
+    }
+
+    public CurrentUserModel? GetCurrentUserOrDefault()
     {
         var user = httpContextAccessor.HttpContext?.User;
         if (user is null) return null;

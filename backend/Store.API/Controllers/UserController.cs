@@ -43,7 +43,10 @@ public class UserController(IMapper mapper) : ControllerBase
     /// <param name="email"></param>
     /// <returns></returns>
     [HttpGet("by-email")]
-    public async Task<ActionResult<UserResponse>> GetUserByEmail([EmailAddress][FromQuery] string email, GetUserByEmailHandler handler, CancellationToken ct)
+    public async Task<ActionResult<UserResponse>> GetUserByEmail(
+        [EmailAddress][FromQuery] string email,
+        GetUserByEmailHandler handler,
+        CancellationToken ct)
     {
         var result = await handler.Handle(email, ct);
         var response = mapper.Map<UserResponse>(result);
@@ -73,7 +76,8 @@ public class UserController(IMapper mapper) : ControllerBase
     public async Task<ActionResult<int>> CreateUser([FromBody] CreateUserRequest request, CreateUserCommandHandler handler, CancellationToken ct)
     {
         var command = mapper.Map<CreateUserCommand>(request);
-        return await handler.Handle(command, ct);
+        var id = await handler.Handle(command, ct);
+        return CreatedAtAction(nameof(GetUserById), new { id }, id);
     }
 
     /// <summary>
@@ -155,8 +159,6 @@ public class UserController(IMapper mapper) : ControllerBase
     ///     Updates current user password
     /// </summary>
     /// <param name="request"></param>
-    /// <param name="handler"></param>
-    /// <param name="ct"></param>
     /// <returns></returns>
     [HttpPut("profile/password")]
     [Authorize]

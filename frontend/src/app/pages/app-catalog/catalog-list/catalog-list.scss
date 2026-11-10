@@ -1,0 +1,24 @@
+@use '@angular/material' as mat;
+
+.catalog-list {
+  &__category-list {
+    @include mat.button-overrides((
+      tonal-container-shape: var(--mat-sys-corner-medium),
+      tonal-container-color: transparent
+    ));
+  }
+
+  &__list-item {
+    
+  }
+
+  &__category-button {
+    border: 1px solid var(--mat-sys-primary);
+    &_active {
+      @include mat.button-overrides((
+        tonal-container-color: var(--mat-sys-primary),
+        tonal-label-text-color: var(--mat-sys-on-primary)
+      ))
+    }
+  }
+}

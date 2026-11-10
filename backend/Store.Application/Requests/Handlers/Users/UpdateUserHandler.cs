@@ -15,6 +15,7 @@ public class UpdateUserHandler(
     public async Task<User> Handle(UpdateUserCommand command, CancellationToken cancellationToken)
     {
         var currentUser = userProvider.GetCurrentUser();
+
         var userToUpdate = await repository.GetByIdAsync(command.Id, cancellationToken);
         if (userToUpdate is null)
         {
@@ -25,13 +26,17 @@ public class UpdateUserHandler(
         {
             throw new ForbiddenException("You can't update this user");
         }
-        if (!currentUser.Role.HasGreaterRole(command.Role))
+        if ((command.Role is not null && !currentUser.Role.HasGreaterRole(command.Role.Value)) || !currentUser.Role.HasGreaterRole(userToUpdate.Role))
         {
             throw new ForbiddenException("You can't make such modifications");
         }
 
-        var hashedPassword = passwordHasher.Hash(command.Password);
-        userToUpdate.Update(command.FirstName, command.LastName, command.Email,  hashedPassword, command.Role);
+        userToUpdate.Update(
+            command.FirstName, 
+            command.LastName, 
+            command.Email,  
+            (command.Password is not null) ? passwordHasher.Hash(command.Password) : null,
+            command.Role);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return userToUpdate;
     }

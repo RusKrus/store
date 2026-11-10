@@ -1,25 +1,29 @@
 using Domain.Common;
+using Store.Domain.Enums;
 
 namespace Store.Domain.Models;
 
 public class Product : BaseEntity
 {
   private Product() {}
-  public Product(string name, string description, decimal price, int quantity)
+
+  public Product(string name, string description, decimal price, int quantity, ProductCategory category)
   {
-    SetValues(name, description, price, quantity);
+    SetValues(name, description, price, quantity, category);
   }
 
-  public void Update(string name, string description, decimal price, int quantity)
-  {
-    SetValues(name, description, price, quantity);
-  }
   public string Name { get; private set; } = null!;
   public string Description { get; private set; } = null!;
   public decimal Price { get; private set; }
+  public ProductCategory Category { get; private set; }
   public int Quantity { get; private set; }
 
-  private void SetValues(string name, string description, decimal price, int quantity)
+  public void Update(string name, string description, decimal price, int quantity, ProductCategory category)
+  {
+    SetValues(name, description, price, quantity, category);
+  }
+
+  private void SetValues(string name, string description, decimal price, int quantity, ProductCategory category)
   {
     if (name.Length < 1)
     {
@@ -43,5 +47,6 @@ public class Product : BaseEntity
     Description = description;
     Price = price;
     Quantity = quantity;
+    Category = category;
   }
 }
