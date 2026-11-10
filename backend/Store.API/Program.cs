@@ -23,10 +23,12 @@ builder.Configuration
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.PropertyNamingPolicy =
-            JsonNamingPolicy.CamelCase;
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+      options.JsonSerializerOptions.PropertyNamingPolicy =
+          JsonNamingPolicy.CamelCase;
+      options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+
+builder.Services.AddCors();
 
 builder.Services.AddHostedService<CartCleaningBackgroundService>();
 
@@ -46,27 +48,27 @@ builder.Services.AddCartCookiesService();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "Store API",
-        Version = "v1",
-        Description = "API store description"
-    });
+  options.SwaggerDoc("v1", new OpenApiInfo
+  {
+    Title = "Store API",
+    Version = "v1",
+    Description = "API store description"
+  });
 
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    options.IncludeXmlComments(xmlPath);
+  var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+  var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+  options.IncludeXmlComments(xmlPath);
 
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Description = "Please enter token",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "bearer"
-    });
-    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+  options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+  {
+    In = ParameterLocation.Header,
+    Description = "Please enter token",
+    Name = "Authorization",
+    Type = SecuritySchemeType.Http,
+    BearerFormat = "JWT",
+    Scheme = "bearer"
+  });
+  options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecuritySchemeReference("Bearer", document),
@@ -74,9 +76,9 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 
-    options.UseInlineDefinitionsForEnums();
+  options.UseInlineDefinitionsForEnums();
 
-    options.DescribeAllParametersInCamelCase();
+  options.DescribeAllParametersInCamelCase();
 });
 
 #region handlers
@@ -87,29 +89,30 @@ var handlers = typeof(CreateProductHandler)
         t.Namespace is not null &&
         t.Namespace.Contains("Handlers"));
 
-foreach (var handler in handlers) {
-    builder.Services.AddScoped(handler);
+foreach (var handler in handlers)
+{
+  builder.Services.AddScoped(handler);
 }
 #endregion
 
 #region auth
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+  options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+  options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration.GetSection("JwtIssuer").Value,
-        ValidAudience = builder.Configuration.GetSection("JwtAudience").Value,
-        IssuerSigningKey =
-            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JwtKey").Value))
-    };
+  options.TokenValidationParameters = new TokenValidationParameters
+  {
+    ValidateIssuer = true,
+    ValidateAudience = true,
+    ValidateLifetime = true,
+    ValidateIssuerSigningKey = true,
+    ValidIssuer = builder.Configuration.GetSection("JwtIssuer").Value,
+    ValidAudience = builder.Configuration.GetSection("JwtAudience").Value,
+    IssuerSigningKey =
+          new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JwtKey").Value))
+  };
 });
 builder.Services.AddAuthorization();
 
@@ -130,6 +133,10 @@ app.UseSwaggerUI();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseCors(builder => builder
+  .WithOrigins("http://localhost:4200")
+  .AllowAnyMethod()
+  .AllowAnyHeader());
 
 await app.Services.MigrateDbAsync();
 
