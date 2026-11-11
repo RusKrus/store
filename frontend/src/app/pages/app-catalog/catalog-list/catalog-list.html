@@ -24,23 +24,32 @@
   }
 
   @if (productsResponse) {
-    <ul class="grid grid-cols-4 gap-x-4 gap-y-8 mt-12">
-      @for (product of productsResponse.items; track product.id) {
-        <li class="flex mat-corner-md catalog-list__list-item bg-primary/10 transition-transform hover:scale-105 hover:outline-primary hover:outline-2 overflow-hidden">
-          <a class="cursor-pointer flex flex-col flex-1">
-            <div class="size-50 mx-auto"></div>
-            <div class="p-4 flex flex-col flex-1 gap-1 bg-primary/5">
-              <h5 class="mat-font-lable-lg">{{ product.name }}</h5>
-              <span class="mat-font-body-sm mb-2">{{ product.description }}</span>
-              <span class="mat-font-title-md">{{ product.price }}$</span>
-              <button matButton="filled" class="mt-auto">
-                <mat-icon>shopping_cart</mat-icon>
-                Add to cart
-              </button>
-            </div>
-          </a>
-        </li>
-      }
-    </ul>
+    <div>
+      <ul class="grid grid-cols-4 gap-x-4 gap-y-8 mt-12">
+        @for (product of productsResponse.items; track product.id) {
+          <li class="flex mat-corner-md catalog-list__list-item bg-primary/10 transition-transform hover:scale-105 hover:outline-primary hover:outline-2 overflow-hidden">
+            <a class="cursor-pointer flex flex-col flex-1">
+              <div class="size-50 mx-auto"></div>
+              <div class="p-4 flex flex-col flex-1 gap-1 bg-primary/5">
+                <h5 class="mat-font-lable-lg">{{ product.name }}</h5>
+                <span class="mat-font-body-sm mb-2">{{ product.description }}</span>
+                <span class="mat-font-title-md">{{ product.price }}$</span>
+                <button matButton="filled" class="mt-auto">
+                  <mat-icon>shopping_cart</mat-icon>
+                  Add to cart
+                </button>
+              </div>
+            </a>
+          </li>
+        }
+      </ul>
+
+      <mat-paginator
+        [length]="productsResponse.total"
+        [pageIndex]="catalogPage()"
+        [pageSize]="catalogPerPage()"
+        showFirstLastButtons
+      ></mat-paginator>
+    </div>
   }
 </div>

@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { CatalogListApi } from "./catalog-list-api";
 import { AsyncPipe } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
@@ -8,10 +8,11 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import { map } from "rxjs";
 import { MatIcon } from "@angular/material/icon";
 import { MatChip } from "@angular/material/chips";
+import { MatPaginator } from "@angular/material/paginator";
 
 @Component({
   selector: 'catalog-list',
-  imports: [AsyncPipe, MatButtonModule, MatIcon, MatChip],
+  imports: [AsyncPipe, MatButtonModule, MatIcon, MatChip, MatPaginator],
   templateUrl: './catalog-list.html',
   styleUrl: './catalog-list.scss'
 })
@@ -26,6 +27,9 @@ export class CatalogList {
   productCategories = PRODUCT_CATEGORIES
 
   activeCategory = toSignal(this.route.queryParamMap.pipe(map(params => params.get('category'))), { initialValue: 'all' })
+
+  catalogPage = signal(0)
+  catalogPerPage = signal(20)
 
   setCategory(category: CategoryLabel) {
     this.router.navigate([], { 
