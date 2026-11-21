@@ -1,17 +1,18 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { CatalogListApi } from "./catalog-list-api";
 import { AsyncPipe } from "@angular/common";
 import { MatButtonModule } from "@angular/material/button";
 import { CategoryLabel, PRODUCT_CATEGORIES } from "../../../common/constants/product-categories";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { map } from "rxjs";
 import { MatIcon } from "@angular/material/icon";
 import { MatChip } from "@angular/material/chips";
+import { MatPaginator } from "@angular/material/paginator";
 
 @Component({
   selector: 'catalog-list',
-  imports: [AsyncPipe, MatButtonModule, MatIcon, MatChip],
+  imports: [AsyncPipe, MatButtonModule, MatIcon, MatChip, MatPaginator, RouterLink],
   templateUrl: './catalog-list.html',
   styleUrl: './catalog-list.scss'
 })
@@ -27,11 +28,14 @@ export class CatalogList {
 
   activeCategory = toSignal(this.route.queryParamMap.pipe(map(params => params.get('category'))), { initialValue: 'all' })
 
+  catalogPage = signal(0)
+  catalogPerPage = signal(20)
+
   setCategory(category: CategoryLabel) {
-    this.router.navigate([], { 
-      relativeTo: this.route, 
-      queryParams: { category }, 
-      replaceUrl: true, 
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { category },
+      replaceUrl: true,
       queryParamsHandling: 'merge',
     })
   }
