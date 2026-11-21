@@ -5,3 +5,18 @@
     outlined-container-shape: var(--mat-sys-corner-extra-large),
   ))
 }
+
+.app-header__main-button {
+  border: 1px solid var(--mat-sys-primary);
+  transition: background-color 0.2s;
+  @include mat.button-overrides((
+    tonal-container-color: transparent
+  ));
+
+  &_active {
+    @include mat.button-overrides((
+      tonal-container-color: var(--mat-sys-primary),
+      tonal-label-text-color: var(--mat-sys-on-primary)
+    ));
+  }
+}
