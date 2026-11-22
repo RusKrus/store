@@ -24,7 +24,9 @@ public class AutoMapperProfileConfiguration : Profile
   public AutoMapperProfileConfiguration()
   {
     CreateMap<CreateProductRequest, CreateProductCommand>();
-    CreateMap<Product, ProductResponse>();
+    CreateMap<Product, ProductResponse>()
+      .ForMember(destination => destination.ImageUrl, opt => opt.MapFrom(product =>
+        product.ImageObjectKey == null ? null : $"api/product/{product.Id}/image"));
     CreateMap<UpdateProductCommand, UpdateProductRequest>();
 
     CreateMap(typeof(PaginationResult<>), typeof (PaginationResponse<>));

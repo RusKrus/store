@@ -38,6 +38,8 @@ builder.Services.AddAutoMapper(_ => { }, typeof(AutoMapperProfileConfiguration))
 builder.Services.AddPostgresRepositories();
 builder.Services.AddPostgres(builder.Configuration);
 
+builder.Services.AddObjectStorage(builder.Configuration);
+
 builder.Services.AddHasherService();
 builder.Services.AddJwtService();
 builder.Services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();

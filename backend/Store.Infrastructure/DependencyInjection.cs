@@ -1,3 +1,5 @@
+using Amazon.Runtime;
+using Amazon.S3;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +12,7 @@ using Store.Application.Interfaces.RabbitMq;
 using Store.Infrastructure.Auth;
 using Store.Infrastructure.Repositories;
 using Store.Infrastructure.Extensions;
+using Store.Infrastructure.ObjectStorage;
 using Store.Infrastructure.Persistence;
 using Store.Infrastructure.RabbitMq.Outbox;
 using Store.Infrastructure.RabbitMq.Publishers;
@@ -81,6 +84,39 @@ public static class DependencyInjection
         services.AddScoped<IOutboxMessageWriter, OutboxMessageWriter>();
 
         services.AddHostedService<OutboxPublisherBackgroundService>();
+        return services;
+    }
+
+    public static IServiceCollection AddObjectStorage(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddOptions<ObjectStorageOptions>()
+            .BindConfiguration(ObjectStorageOptions.NameSpace)
+            .ValidateDataAnnotations()
+            .Validate(options =>
+                    Uri.TryCreate(options.Endpoint, UriKind.Absolute, out var uri) &&
+                    (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps) &&
+                    uri.AbsolutePath == "/" &&
+                    string.IsNullOrEmpty(uri.Query) &&
+                    string.IsNullOrEmpty(uri.Fragment),
+                "ObjectStorage: Endpoint is invalid. Must be absolute plain url like http://127.0.0.1:9000"
+            )
+            .ValidateOnStart();
+
+        services.AddSingleton<IAmazonS3>(serviceProvider =>
+        {
+            var options = serviceProvider.GetRequiredService<IOptions<ObjectStorageOptions>>().Value;
+
+            return new AmazonS3Client(
+                new BasicAWSCredentials(options.AccessKey, options.SecretKey),
+                new AmazonS3Config
+                {
+                    ServiceURL = options.Endpoint,
+                    AuthenticationRegion = options.Region,
+                    ForcePathStyle = true,
+                    RequestChecksumCalculation = RequestChecksumCalculation.WHEN_REQUIRED
+                });
+        });
+
         return services;
     }
 }

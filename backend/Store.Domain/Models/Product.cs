@@ -7,7 +7,12 @@ public class Product : BaseEntity
 {
   private Product() {}
 
-  public Product(string name, string description, decimal price, int quantity, ProductCategory category)
+  public Product(
+    string name,
+    string description,
+    decimal price,
+    int quantity,
+    ProductCategory category)
   {
     SetValues(name, description, price, quantity, category);
   }
@@ -17,6 +22,8 @@ public class Product : BaseEntity
   public decimal Price { get; private set; }
   public ProductCategory Category { get; private set; }
   public int Quantity { get; private set; }
+
+  public string? ImageObjectKey { get; private set; }
 
   public void Update(string name, string description, decimal price, int quantity, ProductCategory category)
   {
@@ -48,5 +55,10 @@ public class Product : BaseEntity
     Price = price;
     Quantity = quantity;
     Category = category;
+  }
+
+  private void SetImageKey(string imageObjectKey)
+  {
+    ImageObjectKey = imageObjectKey;
   }
 }
