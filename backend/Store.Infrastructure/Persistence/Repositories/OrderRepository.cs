@@ -6,9 +6,8 @@ using Store.Application.Interfaces;
 using Store.Domain.Enums;
 using Store.Domain.Models;
 using Store.Infrastructure.Extensions;
-using Store.Infrastructure.Persistence;
 
-namespace Store.Infrastructure.Repositories;
+namespace Store.Infrastructure.Persistence.Repositories;
 
 public class OrderRepository(StoreContext context) : BaseRepository<Order>(context), IOrderRepository
 {

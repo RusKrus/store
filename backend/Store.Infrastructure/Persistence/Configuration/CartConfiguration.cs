@@ -1,9 +1,8 @@
-using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Store.Domain.Models;
 
-namespace Store.Infrastructure.Persistance.Configuration;
+namespace Store.Infrastructure.Persistence.Configuration;
 
 public class CartConfiguration : IEntityTypeConfiguration<Cart>
 {

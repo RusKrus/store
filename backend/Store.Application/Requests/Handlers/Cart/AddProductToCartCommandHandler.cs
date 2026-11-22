@@ -3,6 +3,7 @@ using Application.Common.Errors;
 using Application.Common.Queries;
 using Store.Application.Interfaces;
 using Store.Application.Interfaces.CartCookiesService;
+using Store.Application.Interfaces.Repositories;
 using Store.Domain.Models;
 
 namespace Application.Handlers.Carts;

@@ -3,8 +3,7 @@ using Application.Common.PaginationResult;
 using Store.Domain.Enums;
 using Store.Domain.Models;
 
-
-namespace Store.Application.Interfaces;
+namespace Store.Application.Interfaces.Repositories;
 
 public interface IProductRepository : IBaseRepository<Product>
 {

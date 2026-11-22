@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Store.Domain.Enums;
+using Store.Domain.Models;
 
 namespace Store.API.Contracts.Requests.Product;
 
@@ -8,12 +9,14 @@ namespace Store.API.Contracts.Requests.Product;
 /// </summary>
 public record UpdateProductRequest
 {
-    [Required]
-    [Length(1, 50)]
-    public string Name { get; init; }
-    [Required]
-    [Length(1, 200)]
-    public string Description { get; init; }
+    [Required] [Length(1, 50)] public string Name { get; init; } = "";
+
+    [Required] [Length(1, 200)] public string Description { get; init; } = "";
+
+    [Required] [Length(200, 1000)] public string Details { get; init; } = "";
+
+    [Required] public ProductSpecGroup[] Specs { get; init; } = [];
+    
     [Required]
     [Range(0.01, 999999999)]
     public decimal Price { get; init; }

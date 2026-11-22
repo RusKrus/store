@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Store.API.Contracts.Requests.Common;
 using Store.API.Contracts.Requests.Product;
 using Store.API.Contracts.Response;
+using Store.API.Contracts.Response.Product;
 using Store.API.Extensions;
+using Store.Application.Requests.Commands.Product;
+using Store.Application.Requests.Handlers.Product;
 using Store.Domain.Enums;
 
 namespace Store.Api.Controllers;
@@ -16,7 +19,14 @@ namespace Store.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class ProductController(IMapper mapper) : ControllerBase
+public class ProductController(
+    IMapper mapper,
+    GetPaginatedProductsHandler getPaginatedProductsHandler,
+    GetProductByIdHandler getProductByIdHandler,
+    DeleteProductHandler deleteProductHandler,
+    CreateProductHandler createProductRequestHandler,
+    UpdateProductHandler updateProductHandler,
+    GetCategoriesHandler getCategoriesHandler) : ControllerBase
 {
     /// <summary>
     ///     Returns all available products in store, paginated
@@ -28,12 +38,11 @@ public class ProductController(IMapper mapper) : ControllerBase
     public async Task<PaginationResponse<ProductResponse>> GetProducts(
         PaginationRequest request,
         string? searchString,
-        GetPaginatedProductsHandler handler,
         CancellationToken ct)
     {
         var paginationOptions = request.ToOptions();
         var query = new GetPaginatedProductsQuery(paginationOptions, searchString);
-        var result = await handler.Handle(query, ct);
+        var result = await getPaginatedProductsHandler.Handle(query, ct);
         var response = mapper.Map<PaginationResponse<ProductResponse>>(result);
         return response;
     }
@@ -44,9 +53,9 @@ public class ProductController(IMapper mapper) : ControllerBase
     /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<ProductResponse>> GetProductById(int id, GetProductByIdHandler handler, CancellationToken ct)
+    public async Task<ActionResult<ProductResponse>> GetProductById(int id, CancellationToken ct)
     {
-        var result = await handler.Handle(id, ct);
+        var result = await getProductByIdHandler.Handle(id, ct);
         if (result == null)
         {
             return NotFound();
@@ -63,7 +72,7 @@ public class ProductController(IMapper mapper) : ControllerBase
     /// <returns></returns>
     [Authorize]
     [HttpDelete("{id:int}")]
-    public async Task<ActionResult> DeleteProductById(int id, DeleteProductHandler deleteProductHandler, CancellationToken ct)
+    public async Task<ActionResult> DeleteProductById(int id,  CancellationToken ct)
     {
         await deleteProductHandler.Handle(id, ct);
         return NoContent();
@@ -78,12 +87,11 @@ public class ProductController(IMapper mapper) : ControllerBase
     [Authorize]
     public async Task<ActionResult<int>> CreateProductAsync(
         [FromBody] CreateProductRequest productToCreate,
-        CreateProductHandler productRequestHandler,
         CancellationToken ct)
     {
         var createProductCommand = mapper.Map<CreateProductCommand>(productToCreate);
 
-        var id = await productRequestHandler.Handle(createProductCommand, ct);
+        var id = await createProductRequestHandler.Handle(createProductCommand, ct);
         return CreatedAtAction(nameof(GetProductById), new { id }, new { id });
     }
 
@@ -98,25 +106,26 @@ public class ProductController(IMapper mapper) : ControllerBase
     public async Task<ActionResult<ProductResponse>> UpdateProduct(
         [FromBody] UpdateProductRequest newProductData,
         [FromRoute] int id,
-        UpdateProductHandler handler,
         CancellationToken ct)
     {
         var command = new UpdateProductCommand(
             id,
             newProductData.Name,
             newProductData.Description,
+            newProductData.Specs,
+            newProductData.Details,
             newProductData.Price,
             newProductData.Quantity,
             newProductData.Category
         );
-        var result = await handler.Handle(command, ct);
+        var result = await updateProductHandler.Handle(command, ct);
         var response = mapper.Map<ProductResponse>(result);
         return response;
     }
 
     [HttpGet("categories")]
-    public async Task<ActionResult<List<ProductCategory>>> GetProductCategories([FromQuery] bool? showAll, GetCategoriesHandler handler, CancellationToken ct)
+    public async Task<ActionResult<List<ProductCategory>>> GetProductCategories([FromQuery] bool? showAll, CancellationToken ct)
     {
-        return await handler.Handle(showAll, ct);
+        return await getCategoriesHandler.Handle(showAll, ct);
     }
 }

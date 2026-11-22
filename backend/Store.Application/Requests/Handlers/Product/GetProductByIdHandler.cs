@@ -1,4 +1,5 @@
 using Store.Application.Interfaces;
+using Store.Application.Interfaces.Repositories;
 using Store.Domain.Models;
 
 namespace Application.Handlers;

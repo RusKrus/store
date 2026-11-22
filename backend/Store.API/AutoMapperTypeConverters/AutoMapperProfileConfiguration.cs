@@ -1,4 +1,4 @@
-using Application.Commands;
+using System.Text.Json;
 using Application.Commands.Auth;
 using Application.Commands.Cart;
 using Application.Commands.Users;
@@ -12,12 +12,15 @@ using Store.API.Contracts.Requests.Product;
 using Store.API.Contracts.Requests.User;
 using Store.API.Contracts.Response;
 using Store.API.Contracts.Response.Cart;
+using Store.API.Contracts.Response.Common;
 using Store.API.Contracts.Response.OrderItem;
 using Store.API.Contracts.Response.Orders;
+using Store.API.Contracts.Response.Product;
 using Store.API.Contracts.Response.Users;
+using Store.Application.Requests.Commands.Product;
 using Store.Domain.Models;
 
-namespace Store.AutoMapperTypeConverters;
+namespace Store.API.AutoMapperTypeConverters;
 
 public class AutoMapperProfileConfiguration : Profile
 {
@@ -25,8 +28,14 @@ public class AutoMapperProfileConfiguration : Profile
   {
     CreateMap<CreateProductRequest, CreateProductCommand>();
     CreateMap<Product, ProductResponse>()
-      .ForMember(destination => destination.ImageUrl, opt => opt.MapFrom(product =>
-        product.ImageObjectKey == null ? null : $"api/product/{product.Id}/image"));
+      .ForMember(destination => destination.Images, opt => opt.MapFrom(product =>
+        product.Images
+          .Select(imageDescription => new ImageResponse(
+            imageDescription.Id,
+            $"api/product/{imageDescription.Id}/image",
+            imageDescription.Description))))
+      .ForMember(destination => destination.Specs, opt => opt.MapFrom(product => 
+        product.Specs.Select(specs =>  JsonSerializer.Deserialize<ProductSpecGroup>(specs))));
     CreateMap<UpdateProductCommand, UpdateProductRequest>();
 
     CreateMap(typeof(PaginationResult<>), typeof (PaginationResponse<>));

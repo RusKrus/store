@@ -1,8 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Store.Infrastructure.Persistence;
 
-namespace Store.Infrastructure.Persistance.Configuration;
+namespace Store.Infrastructure.Persistence.Configuration;
 
 public class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage>
 {

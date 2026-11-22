@@ -1,6 +1,7 @@
 using Application.Common.Errors;
 using Store.Application.Interfaces;
 using Domain.Extensions;
+using Store.Application.Interfaces.Repositories;
 
 namespace Application.Handlers;
 
