@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Store.Domain.Models;
-using Store.Infrastructure.Persistance.Configuration;
+using Store.Infrastructure.Persistence.Configuration;
 
 namespace Store.Infrastructure.Persistence;
 
@@ -13,6 +13,7 @@ public class StoreContext(DbContextOptions<StoreContext> options) : DbContext(op
   public DbSet<Cart> Carts { get; set; }
   public DbSet<CartItem> CartItems { get; set; }
   public DbSet<OrderItem> OrderItems { get; set; }
+  public DbSet<ImageDescription> ImageDescriptions { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
@@ -24,6 +25,7 @@ public class StoreContext(DbContextOptions<StoreContext> options) : DbContext(op
     modelBuilder.ApplyConfiguration(new OrderConfiguration());
     modelBuilder.ApplyConfiguration(new OrderItemsConfiguration());
     modelBuilder.ApplyConfiguration(new ProductsConfiguration());
+    modelBuilder.ApplyConfiguration(new ImageDescriptionConfiguration());
 
     base.OnModelCreating(modelBuilder);
   }

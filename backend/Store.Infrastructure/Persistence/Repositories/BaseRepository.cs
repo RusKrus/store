@@ -1,13 +1,8 @@
-using Application.Common.PaginationOptions;
-using Application.Common.PaginationResult;
 using Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Store.Application.Interfaces;
-using Store.Domain.Models;
-using Store.Infrastructure.Extensions;
-using Store.Infrastructure.Persistence;
 
-namespace Store.Infrastructure.Repositories;
+namespace Store.Infrastructure.Persistence.Repositories;
 
 public abstract class BaseRepository<T>(StoreContext context) : IBaseRepository<T> where T : BaseEntity
 {

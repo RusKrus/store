@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Store.Application.Interfaces;
 using Store.Domain.Models;
 using Store.Infrastructure.Persistence;
+using Store.Infrastructure.Persistence.Repositories;
 
 namespace Store.Infrastructure.Repositories;
 

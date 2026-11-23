@@ -9,7 +9,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Store.API.Contracts.Requests.Product;
 using Store.API.Contracts.Response;
-using Xunit.Sdk;
+using Store.API.Contracts.Response.Product;
 
 namespace Tests.Integration;
 

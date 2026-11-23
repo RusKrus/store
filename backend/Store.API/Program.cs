@@ -6,9 +6,10 @@ using Application.Handlers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using Store.API.AutoMapperTypeConverters;
 using Store.Api.Middlewares;
 using Store.Application.Interfaces;
-using Store.AutoMapperTypeConverters;
+using Store.Application.Requests.Handlers.Product;
 using Store.Infrastructure.Auth;
 using Store.Infrastructure.Persistence;
 using Store.Infrastructure;
@@ -37,6 +38,8 @@ builder.Services.AddAutoMapper(_ => { }, typeof(AutoMapperProfileConfiguration))
 
 builder.Services.AddPostgresRepositories();
 builder.Services.AddPostgres(builder.Configuration);
+
+builder.Services.AddObjectStorage(builder.Configuration);
 
 builder.Services.AddHasherService();
 builder.Services.AddJwtService();
